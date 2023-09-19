@@ -329,9 +329,12 @@ export const UserResolvers: Resolvers = {
                 throw new UserInputError(`Email ${props.email} already used`);
             }
             const accountStatus: AccountStatusType = "EMAIL_VERIFICATION";
+            const { userDiskLimit } = config.appConfig.fileConfig;
+
             const newUser = await models.User.create({
                 ...props,
                 accountStatus,
+                reservedDiskSpace: userDiskLimit,
             });
             await newUser.addRole("ANONYMOUS");
 

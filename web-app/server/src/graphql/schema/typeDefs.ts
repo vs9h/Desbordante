@@ -59,6 +59,8 @@ const typeDefs = gql`
         accountStatus: String!
         tasks(pagination: Pagination!, withDeleted: Boolean! = False): [TaskInfo!]
         datasets(pagination: Pagination! = { offset: 0, limit: 10 }): [DatasetInfo!]
+        reservedDiskSpace: Int!
+        remainingDiskSpace: Int!
     }
 
     enum AccountStatusType {
@@ -673,6 +675,8 @@ const typeDefs = gql`
         "The original name of the file submitted by the user"
         originalFileName: String!
         mimeType: String
+        "File size in bytes"
+        fileSize: Int!
         encoding: String
         hasHeader: Boolean!
         header: [String!]

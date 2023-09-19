@@ -1,4 +1,13 @@
-import sequelize, { BOOLEAN, DATE, INTEGER, STRING, TEXT, UUID, UUIDV4 } from "sequelize";
+import sequelize, {
+    BOOLEAN,
+    DATE,
+    INTEGER,
+    Op,
+    STRING,
+    TEXT,
+    UUID,
+    UUIDV4,
+} from "sequelize";
 import {
     BelongsTo,
     Column,
@@ -14,6 +23,7 @@ import {
     builtInDatasets,
     getPathToBuiltInDataset,
 } from "../../initBuiltInDatasets";
+import { v4 as uuidv4 } from "uuid";
 import { CsvParserStream, parse } from "fast-csv";
 import { FileProps, Column as SchemaColumn } from "../../../graphql/types/types";
 import {
@@ -23,12 +33,14 @@ import {
     findRowsAndColumnsNumber,
 } from "../../../graphql/schema/TaskCreating/csvValidator";
 import { ApolloError } from "apollo-server-core";
+import { FileUpload } from "graphql-upload";
 import { FileFormat } from "./FileFormat";
-import { GeneralTaskConfig } from "../TaskData/configs/GeneralTaskConfig";
+import { GeneralTaskConfig, mainPrimitives } from "../TaskData/configs/GeneralTaskConfig";
 import { Row } from "@fast-csv/parse";
 import { User } from "../UserData/User";
 import config from "../../../config";
-import { finished } from "stream/promises";
+import { FileSizeLimiter } from "./streamDataLimiter";
+import { pipeline } from "stream/promises";
 import fs from "fs";
 import { generateHeaderByPath } from "../../../graphql/schema/TaskCreating/generateHeader";
 import path from "path";
@@ -80,6 +92,9 @@ export class FileInfo extends Model implements FileInfoModelMethods {
 
     @Column({ type: STRING, allowNull: true })
     mimeType!: string | null;
+
+    @Column({ type: INTEGER, allowNull: false })
+    fileSize!: number;
 
     @Column({ type: STRING })
     encoding!: string | null;
@@ -162,6 +177,7 @@ export class FileInfo extends Model implements FileInfoModelMethods {
         const dbPath = getPathToBuiltInDataset(props.fileName);
         const path = FileInfo.resolvePath(dbPath, isBuiltIn);
         const { hasHeader, delimiter } = datasetProps;
+        const { size: fileSize } = await fs.promises.stat(path);
         const header = await generateHeaderByPath(path, hasHeader, delimiter);
         const renamedHeader = JSON.stringify(header);
 
@@ -173,6 +189,7 @@ export class FileInfo extends Model implements FileInfoModelMethods {
                 renamedHeader,
                 hasHeader,
                 delimiter,
+                fileSize,
             },
         });
         console.log(
@@ -192,7 +209,7 @@ export class FileInfo extends Model implements FileInfoModelMethods {
 
     static uploadDataset = async (
         datasetProps: FileProps,
-        table: any,
+        table: Promise<FileUpload>,
         userID: string | null = null
     ) => {
         const isBuiltIn = false;
@@ -204,28 +221,47 @@ export class FileInfo extends Model implements FileInfoModelMethods {
         } = await table;
 
         const stream = createReadStream();
-        const file = await FileInfo.create({
-            ...datasetProps,
-            encoding,
-            mimeType,
-            originalFileName,
-            userID,
-            isValid: false,
+        const fileID = uuidv4();
+        const fileName = `${fileID}.csv`;
+        const newFilePath = `${
+            (!config.inContainer && "../../volumes/") || ""
+        }uploads/${fileName}`;
+        const out = fs.createWriteStream(newFilePath);
+
+        const user = userID === null ? null : await User.findByPk(userID);
+        const maxFileSize = user?.remainingDiskSpace ?? Infinity;
+
+        const fileSizeLimiter = new FileSizeLimiter(maxFileSize);
+        fileSizeLimiter.on("error", (error) => {
+            stream.destroy(error);
+            out.destroy(error);
         });
 
-        const { fileID } = file;
-        const fileName = `${fileID}.csv`;
-        const path = FileInfo.getPathToUploadedDataset(fileName);
-        await file.update({ fileName, path });
+        await pipeline(stream, fileSizeLimiter, out);
 
-        const out = fs.createWriteStream(
-            `${(!config.inContainer && "../../volumes/") || ""}uploads/${fileName}`
-        );
-        stream.pipe(out);
-        await finished(out);
+        const path = FileInfo.getPathToUploadedDataset(fileName);
+        const { size: fileSize } = await fs.promises.stat(newFilePath);
+
+        const file = await FileInfo.create({
+            ...datasetProps,
+            fileID,
+            encoding,
+            mimeType,
+            fileName,
+            originalFileName,
+            path,
+            userID,
+            isValid: false,
+            fileSize,
+        });
+
         await file.update({
             renamedHeader: JSON.stringify(await file.generateHeader()),
         });
+
+        if (user) {
+            await user.recomputeRemainingDiskSpace();
+        }
 
         if (datasetProps.inputFormat) {
             const fileFormat = await FileFormat.createFileFormatIfPropsValid(

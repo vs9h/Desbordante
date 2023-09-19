@@ -32,7 +32,7 @@ export const config = {
         fileConfig: {
             allowedFileFormats: ["text/csv", "application/vnd.ms-excel"],
             allowedDelimiters: [",", "|", ";"],
-            maxFileSize: 1e10,
+            userDiskLimit: Number(process.env.USER_DISK_LIMIT_MB || 50),
         },
         maxThreadsCount: Number(process.env.MAX_THREADS_COUNT || "4"),
     },
