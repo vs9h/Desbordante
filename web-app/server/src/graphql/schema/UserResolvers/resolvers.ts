@@ -14,6 +14,7 @@ import { AuthenticationError } from "apollo-server-express";
 import { FindOptions, Op } from "sequelize";
 import { Permission } from "../../../db/models/UserData/Permission";
 import { Role } from "../../../db/models/UserData/Role";
+import { TaskState } from "../../../db/models/TaskData/TaskState";
 import config from "../../../config";
 import { createAndSendVerificationCode } from "./emailSender";
 import jwt from "jsonwebtoken";
@@ -57,14 +58,20 @@ export const UserResolvers: Resolvers = {
             }
             return await models.Feedback.findAll({ where: { userID } });
         },
-        tasks: async ({ userID }, _, { models }) => {
+        tasks: async ({ userID }, { pagination, withDeleted }, { models }) => {
             if (!userID) {
                 throw new ApolloError("UserID is undefined");
             }
+
             const configs = await models.GeneralTaskConfig.findAll({
-                where: { userID },
-                paranoid: true,
-                attributes: ["taskID", "fileID", ["type", "propertyPrefix"]],
+                where: { "$taskState.userID$": userID },
+                include: {
+                    model: TaskState,
+                    attributes: ["userID"],
+                },
+                paranoid: !withDeleted,
+                ...pagination,
+                attributes: ["taskID", "fileID", ["type", "prefix"]],
             });
             return configs as (GeneralTaskConfig & {
                 prefix: MainPrimitiveType;
