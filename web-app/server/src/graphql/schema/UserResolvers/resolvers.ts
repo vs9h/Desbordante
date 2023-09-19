@@ -11,7 +11,7 @@ import {
 } from "../../../db/models/UserData/Session";
 import { AccountStatusType } from "../../../db/models/UserData/User";
 import { AuthenticationError } from "apollo-server-express";
-import { FindOptions } from "sequelize";
+import { FindOptions, Op } from "sequelize";
 import { Permission } from "../../../db/models/UserData/Permission";
 import { Role } from "../../../db/models/UserData/Role";
 import config from "../../../config";
@@ -70,10 +70,36 @@ export const UserResolvers: Resolvers = {
                 prefix: MainPrimitiveType;
             })[];
         },
-        datasets: async ({ userID }, _, { models }) => {
+        datasets: async ({ userID }, { filter, sort, pagination }, { models }) => {
             if (!userID) {
                 throw new ApolloError("UserID is undefined");
             }
+
+            const options: FindOptions = {
+                where: {
+                    userID,
+                    isValid: true,
+                },
+                ...pagination,
+            };
+
+            if (filter) {
+                options.where = {
+                    originalFileName: {
+                        [Op.iLike]: `%${filter.originalFileName}%`,
+                    },
+                };
+            }
+
+            if (sort) {
+                const sortKey = {
+                    ORIGINAL_FILE_NAME: "originalFileName",
+                    USAGE_FREQUENCY: "numberOfUses",
+                    FILE_SIZE: "fileSize",
+                }[sort.sortBy];
+                options.order = [[sortKey, sort.orderBy]];
+            }
+
             return await models.FileInfo.findAll({
                 where: {
                     userID,

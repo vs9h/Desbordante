@@ -621,14 +621,6 @@ export const TaskInfoResolvers: Resolvers = {
             }
             return fileInfo.getColumnNames();
         },
-        numberOfUses: async ({ fileID }, _, { models }) => {
-            return await models.GeneralTaskConfig.count({
-                where: {
-                    type: { [Op.in]: mainPrimitives },
-                    fileID,
-                },
-            });
-        },
     },
     Query: {
         datasetInfo: async (_, { fileID }, { models, sessionInfo }) => {

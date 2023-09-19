@@ -120,8 +120,22 @@ export class FileInfo extends Model implements FileInfoModelMethods {
     @Column({ type: INTEGER, allowNull: true })
     countOfColumns?: number;
 
+    @Column({ type: INTEGER, defaultValue: 0, allowNull: false })
+    numberOfUses!: number;
+
     @Column({ type: STRING, unique: true })
     path!: string;
+
+    recomputeNumberOfUses = async () => {
+        const numberOfUses = await GeneralTaskConfig.count({
+            where: {
+                type: { [Op.in]: mainPrimitives },
+                fileID: this.fileID,
+            },
+        });
+
+        return this.update({ numberOfUses });
+    };
 
     static getPathToMainFile = () => {
         if (!require.main) {

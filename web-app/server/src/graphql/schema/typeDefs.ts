@@ -46,6 +46,21 @@ const typeDefs = gql`
         limit: Int!
     }
 
+    input DatasetsFilter {
+        originalFileName: String!
+    }
+
+    enum DatasetsSortBy {
+        ORIGINAL_FILE_NAME
+        USAGE_FREQUENCY
+        FILE_SIZE
+    }
+
+    input DatasetsSort {
+        orderBy: OrderBy!
+        sortBy: DatasetsSortBy!
+    }
+
     type User {
         userID: String!
         feedbacks(pagination: Pagination! = { offset: 0, limit: 10 }): [Feedback!]
@@ -58,7 +73,11 @@ const typeDefs = gql`
         occupation: String!
         accountStatus: String!
         tasks(pagination: Pagination!, withDeleted: Boolean! = False): [TaskInfo!]
-        datasets(pagination: Pagination! = { offset: 0, limit: 10 }): [DatasetInfo!]
+        datasets(
+            filter: DatasetsFilter
+            sort: DatasetsSort
+            pagination: Pagination! = { offset: 0, limit: 10 }
+        ): [DatasetInfo!]
         reservedDiskSpace: Int!
         remainingDiskSpace: Int!
     }
