@@ -802,6 +802,17 @@ const typeDefs = gql`
         message: String!
     }
 
+    input UpdatingUserProps {
+        fullName: String
+        country: String
+        companyOrAffiliation: String
+        occupation: String
+    }
+
+    type UpdateUserAnswer {
+        message: String!
+    }
+
     type TokenPair {
         refreshToken: String!
         accessToken: String!
@@ -898,6 +909,11 @@ const typeDefs = gql`
         After creating new account user will have anonymous permissions;
         """
         createUser(props: CreatingUserProps!): CreateUserAnswer!
+
+        """
+        Update user info
+        """
+        updateUser(props: UpdatingUserProps!): UpdateUserAnswer!
 
         """
         Code for email approving is temporary (24 hours, destroys after first attempt).

@@ -370,6 +370,19 @@ export const UserResolvers: Resolvers = {
             const tokens = await session.issueTokenPair();
             return { message: "New account created", tokens };
         },
+        updateUser: async (parent, { props }, { models, sessionInfo }) => {
+            if (!sessionInfo) {
+                throw new AuthenticationError("User must be authorized");
+            }
+
+            await models.User.update(props, {
+                where: {
+                    userID: sessionInfo.userID,
+                },
+            });
+
+            return { message: "User info updated" };
+        },
         approveUserEmail: async (
             parent,
             { codeValue },
