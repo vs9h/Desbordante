@@ -62,7 +62,7 @@ const getDefaultTypoFDFilter = (
     pagination: { offset: 0, limit: 10 },
     filterString: "",
     withoutKeys: false,
-    orderBy: "ASC",
+    orderDirection: "ASC",
     FDSortBy: "LHS_COL_ID",
     ...filter,
 });

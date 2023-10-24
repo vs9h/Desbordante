@@ -33,7 +33,7 @@ query GetFDTaskInfo($taskID: ID!){
                         PKs {
                             ...Col
                         }
-                        filteredDeps(filter: {pagination: {offset: 0, limit: 10}, filterString: "", withoutKeys:true orderBy: ASC, FDSortBy: LHS_COL_ID}) {
+                        filteredDeps(filter: {pagination: {offset: 0, limit: 10}, filterString: "", withoutKeys:true orderDirection: ASC, FDSortBy: LHS_COL_ID}) {
                             filteredDepsAmount
                             ... on FilteredFDs {
                                 __typename
