@@ -719,19 +719,13 @@ export const TaskInfoResolvers: Resolvers = {
                 });
             }
 
-            if (type == "MFD") {
-                throw new UserInputError("Not implemented");
-            }
-
             const state = await models.TaskState.getTaskState(taskID);
 
             const deps = await state.getResultFieldAsString(type, "deps");
             const params = [filter, fileID, type, state, context] as const;
 
             const specificFilter = await getSpecificFilter(type, [...params]);
-            if (specificFilter instanceof MFDFilter) {
-                throw new ApolloError("Not Implemented");
-            }
+
             const depsInfo = await specificFilter.getFilteredTransformedDeps(deps);
 
             const writer = getSpecificWriter(type, depsInfo.deps, props);

@@ -1,5 +1,5 @@
 import "jspdf-autotable";
-import { Ar, Cfd, DownloadingTaskProps, Fd } from "../../../types/types";
+import { Ar, Cfd, DownloadingTaskProps, Fd, Mfd } from "../../../types/types";
 import { ApolloError } from "apollo-server-core";
 import config from "../../../../config";
 import { createArrayCsvWriter } from "csv-writer";
@@ -7,9 +7,9 @@ import { jsPDF } from "jspdf";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
-export type TransformedDep = (string | number)[];
+export type TransformedDep = (string | number | boolean)[];
 
-export abstract class AbstractWriter<T extends Fd | Cfd | Ar> {
+export abstract class AbstractWriter<T extends Fd | Cfd | Ar | Mfd> {
     protected header: string[];
     protected static colDelimiter = "|";
     protected constructor(protected deps: T[], protected props: DownloadingTaskProps) {
