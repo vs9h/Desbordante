@@ -1,4 +1,5 @@
 import {
+  AFDSortBy,
   ARSortBy,
   CFDSortBy,
   FDSortBy,
@@ -15,7 +16,7 @@ export const OrderingTitles: Record<PrimitiveType, Record<string, string>> = {
     [CFDSortBy.RHS_COL_NAME]: 'RHS NAME',
     [CFDSortBy.CONF]: 'Condfidence',
     [CFDSortBy.LHS_PATTERN]: 'LHS PATTERN',
-    [CFDSortBy.LHS_PATTERN]: 'RHS PATTERN',
+    [CFDSortBy.RHS_PATTERN]: 'RHS PATTERN',
   },
   [PrimitiveType.AR]: {
     [ARSortBy.CONF]: 'Confidence',
@@ -30,5 +31,11 @@ export const OrderingTitles: Record<PrimitiveType, Record<string, string>> = {
   [PrimitiveType.TypoCluster]: {
     [FDSortBy.LHS_NAME]: 'LHS NAME',
     [FDSortBy.RHS_NAME]: 'RHS NAME',
+  },
+  [PrimitiveType.AFD]: {
+    [AFDSortBy.LHS_VALUES]: 'LHS values',
+    [AFDSortBy.DISTINCT_RHS_VALUES]: 'Distinct RHS values',
+    [AFDSortBy.FREQUENTNESS]: 'Frequentness',
+    [AFDSortBy.SIZE]: 'Size',
   },
 };

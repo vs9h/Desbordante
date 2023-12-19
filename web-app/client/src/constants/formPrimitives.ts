@@ -4,6 +4,7 @@ import { FDForm } from '@constants/configuratorForm/FDForm';
 import { MFDForm } from '@constants/configuratorForm/MFDForm';
 import { TypoFDForm } from '@constants/configuratorForm/TypoFDForm';
 import { MainPrimitiveType } from 'types/globalTypes';
+import { AFDForm } from './configuratorForm/AFDForm';
 
 const primitives = {
   [MainPrimitiveType.FD]: FDForm,
@@ -11,6 +12,7 @@ const primitives = {
   [MainPrimitiveType.CFD]: CFDForm,
   [MainPrimitiveType.TypoFD]: TypoFDForm,
   [MainPrimitiveType.MFD]: MFDForm,
+  [MainPrimitiveType.AFD]: AFDForm,
 };
 const excludedPrimitives = [MainPrimitiveType.Stats];
 

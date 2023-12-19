@@ -1,0 +1,51 @@
+@import "styles/common";
+
+.greenHighlighted {
+  background: $success-25 !important; // stylelint-disable-line declaration-no-important
+}
+
+.greenEven {
+  background: $success-05 !important; // stylelint-disable-line declaration-no-important
+}
+
+.greenOdd {
+  background: $success-10 !important; // stylelint-disable-line declaration-no-important
+}
+
+.redHighlighted {
+  background: $error-25 !important; // stylelint-disable-line declaration-no-important
+}
+
+.redEven {
+  background: $error-05 !important; // stylelint-disable-line declaration-no-important
+}
+
+.redOdd {
+  background: $error-10 !important; // stylelint-disable-line declaration-no-important
+}
+
+.checkmark {
+  path {
+    fill: $success-100;
+    stroke: none;
+  }
+}
+
+.cross {
+  path {
+    fill: $error-100;
+    stroke: none;
+  }
+}
+
+.valueText {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clickableIndex {
+  text-decoration: underline;
+  cursor: pointer;
+}

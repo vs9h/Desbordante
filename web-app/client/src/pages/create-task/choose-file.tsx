@@ -19,14 +19,14 @@ import { MainPrimitiveType } from 'types/globalTypes';
 
 const sortDatasetsBySupportedPrimitive = (
   datasets?: AllowedDataset[],
-  primitive?: MainPrimitiveType
+  primitive?: MainPrimitiveType,
 ) =>
   datasets &&
   primitive &&
   datasets.sort(
     (a, b) =>
       Number(b.supportedPrimitives.includes(primitive)) -
-      Number(a.supportedPrimitives.includes(primitive))
+      Number(a.supportedPrimitives.includes(primitive)),
   );
 
 type Props = {
@@ -40,16 +40,31 @@ const ChooseFile: NextPage<Props> = ({ defaultAlgorithmConfig }) => {
 
   const userDatasets = useMemo(
     () => sortDatasetsBySupportedPrimitive(user?.datasets, primitive.value),
-    [primitive.value, user?.datasets]
+    [primitive.value, user?.datasets],
   );
   const builtinDatasets = useMemo(
     () =>
       sortDatasetsBySupportedPrimitive(
         defaultAlgorithmConfig?.algorithmsConfig?.allowedDatasets,
-        primitive.value
+        primitive.value,
       ),
-    [defaultAlgorithmConfig?.algorithmsConfig?.allowedDatasets, primitive.value]
+    [
+      defaultAlgorithmConfig?.algorithmsConfig?.allowedDatasets,
+      primitive.value,
+    ],
   );
+
+  //удалить, когда будет бэк
+  if (
+    defaultAlgorithmConfig?.algorithmsConfig?.allowedDatasets[0][
+      'supportedPrimitives'
+    ].at(-1) !== MainPrimitiveType.AFD
+  ) {
+    defaultAlgorithmConfig?.algorithmsConfig?.allowedDatasets[0][
+      'supportedPrimitives'
+    ].push(MainPrimitiveType.AFD);
+  }
+
   const selectedDataset = useMemo(
     () =>
       builtinDatasets
@@ -58,9 +73,9 @@ const ChooseFile: NextPage<Props> = ({ defaultAlgorithmConfig }) => {
           (dataset) =>
             primitive.value &&
             dataset.supportedPrimitives.includes(primitive.value) &&
-            dataset.fileID === fileID.value
+            dataset.fileID === fileID.value,
         ),
-    [builtinDatasets, fileID.value, primitive.value, userDatasets]
+    [builtinDatasets, fileID.value, primitive.value, userDatasets],
   );
 
   useEffect(() => {
@@ -156,7 +171,7 @@ const ChooseFile: NextPage<Props> = ({ defaultAlgorithmConfig }) => {
       footer={footer}
       className={cn(
         styles.content,
-        !user?.permissions.canUploadFiles && styles.reversed
+        !user?.permissions.canUploadFiles && styles.reversed,
       )}
     >
       {userFiles}

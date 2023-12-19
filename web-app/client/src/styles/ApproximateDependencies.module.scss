@@ -1,0 +1,91 @@
+@import "styles/common";
+
+.subHeader {
+  @include paragraph;
+  display: flex;
+  gap: 16px;
+}
+
+.filters {
+  flex-direction: row;
+  gap: 16px;
+  display: flex;
+  align-items: flex-end;
+
+  .buttons {
+    gap: 16px;
+    display: flex;
+
+    button {
+      height: 60px;
+    }
+  }
+}
+
+.clustersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.rows {
+  padding-top: 24px;
+  min-height: 300px;
+}
+
+.pagination {
+  margin-top: 24px;
+}
+
+.table {
+  max-width: 100%;
+  width: fit-content;
+  margin: 0;
+
+  tr {
+    @include paragraph-small;
+    color: $black-75;
+  }
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filler {
+  height: 80px;
+  width: fit-content;
+  margin: auto;
+  display: flex;
+  align-items: center;
+
+  .icon {
+    height: 80px;
+    width: 80px;
+    border-radius: 24px;
+    padding: 16px;
+    margin-right: 16px;
+    background-color: $primary-10;
+
+    svg {
+      height: 48px;
+      width: 48px;
+      color: $primary-0;
+    }
+  }
+
+  .text {
+    h6 {
+      @include heading-6;
+      margin-bottom: 8px;
+    }
+
+    p {
+      @include paragraph-small;
+      color: $black-75;
+    }
+  }
+}

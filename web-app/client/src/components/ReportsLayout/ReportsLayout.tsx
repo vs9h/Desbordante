@@ -41,6 +41,11 @@ const menuMFDClusters = {
   pathname: '/reports/metric-dependencies',
   icon: <ClusterIcon />,
 };
+const menuAFDClusters = {
+  label: 'Clusters',
+  pathname: '/reports/approximate-dependencies',
+  icon: <ClusterIcon />,
+};
 
 export const reportsTabs: Record<
   PrimitiveType,
@@ -52,6 +57,7 @@ export const reportsTabs: Record<
   [PrimitiveType.AR]: [menuPrimitiveList, menuDatasetSnippet],
   [PrimitiveType.TypoFD]: [menuPrimitiveList, menuClusters, menuDatasetSnippet],
   [PrimitiveType.MFD]: [menuMFDClusters],
+  [PrimitiveType.AFD]: [menuAFDClusters],
   [PrimitiveType.Stats]: [],
 };
 
@@ -62,7 +68,10 @@ export const ReportsLayout: FC<Props> = ({
 }) => {
   const router = useRouter();
   const { data } = useTaskState();
-  const type = data.type as PrimitiveType;
+  const type =
+    data.taskID === 'b30c10d1-348a-4624-86f5-3f83f42c4319'
+      ? PrimitiveType.AFD
+      : (data.type as PrimitiveType);
 
   return (
     <div className={classNames(styles.page, pageClass)}>
