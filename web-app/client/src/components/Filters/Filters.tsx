@@ -6,7 +6,7 @@ import {
   FDSortBy,
   CFDSortBy,
   ARSortBy,
-  OrderBy,
+  OrderDirection,
   PrimitiveType,
 } from 'types/globalTypes';
 
@@ -14,7 +14,7 @@ export type Sorting = FDSortBy | CFDSortBy | ARSortBy;
 
 export type FiltersFields = {
   ordering: Sorting;
-  direction: OrderBy;
+  direction: OrderDirection;
   search: string;
   page: number;
   mustContainRhsColIndices: string;
@@ -30,7 +30,7 @@ export const useFilters = (primitive: PrimitiveType) => {
     defaultValues: {
       page: 1,
       ordering: getDefaultOrdering(primitive),
-      direction: OrderBy.ASC,
+      direction: OrderDirection.ASC,
       search: '',
       mustContainRhsColIndices: '',
       mustContainLhsColIndices: '',

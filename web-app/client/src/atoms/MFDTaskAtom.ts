@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { MFDSortBy, OrderBy, Pagination } from 'types/globalTypes';
+import { MFDSortBy, OrderDirection, Pagination } from 'types/globalTypes';
 
 export type MFDHighlight = {
   index: number;
@@ -25,7 +25,7 @@ type MFDTaskAtom = {
   cluster: MFDCluster;
   pagination: Pagination;
   sortBy: MFDSortBy;
-  orderBy: OrderBy;
+  orderDirection: OrderDirection;
 };
 
 export const MFDAtomDefaultValues: MFDTaskAtom = {
@@ -45,7 +45,7 @@ export const MFDAtomDefaultValues: MFDTaskAtom = {
     limit: 0,
   },
   sortBy: MFDSortBy.MAXIMUM_DISTANCE,
-  orderBy: OrderBy.ASC,
+  orderDirection: OrderDirection.ASC,
 };
 
 export const MFDAtomDefaultValuesWithParams = (
@@ -53,7 +53,7 @@ export const MFDAtomDefaultValuesWithParams = (
   clusterIndex = 0,
   limit = 0,
   sortBy = MFDSortBy.MAXIMUM_DISTANCE,
-  orderBy = OrderBy.ASC
+  orderDirection = OrderDirection.ASC
 ) => ({
   ...MFDAtomDefaultValues,
   taskID,
@@ -63,7 +63,7 @@ export const MFDAtomDefaultValuesWithParams = (
     limit,
   },
   sortBy,
-  orderBy,
+  orderDirection,
 });
 
 const MFDAtom = atom<MFDTaskAtom>(MFDAtomDefaultValues);
