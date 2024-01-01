@@ -1,0 +1,97 @@
+@import "styles/common";
+
+.page {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 100%;
+
+  @media (max-width: 1200px) {
+    flex-direction: column;
+  }
+
+  .background {
+    position: fixed;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .sectionText {
+    padding: 0;
+    position: relative;
+    text-align: center;
+  }
+
+  .menu {
+    padding: 64px;
+
+    @media (max-width: 1200px) {
+      width: 100%;
+      height: auto;
+      padding: 32px 64px 0;
+    }
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      @media (max-width: 1200px) {
+        flex-direction: row;
+        justify-content: center;
+        width: 100%;
+      }
+
+      li {
+        justify-content: flex-start;
+        gap: 16px;
+        align-items: center;
+        display: flex;
+        padding: 17px 32px;
+        width: 264px;
+        cursor: pointer;
+
+        @media (max-width: 1200px) {
+          width: auto;
+        }
+
+        p {
+          @media (max-width: 1200px) {
+            display: none;
+          }
+        }
+
+        &.active {
+          background: $primary-0;
+          border-radius: 8px;
+
+          p {
+            color: $white;
+
+            @media (max-width: 1200px) {
+              display: inline-block;
+            }
+          }
+
+          svg * {
+            fill: $white;
+          }
+        }
+      }
+    }
+  }
+
+  .content {
+    flex-grow: 1;
+    min-width: 0;
+    padding: 64px;
+    text-align: left;
+
+    @media (max-width: 1200px) {
+      padding: 64px 128px;
+    }
+  }
+}
