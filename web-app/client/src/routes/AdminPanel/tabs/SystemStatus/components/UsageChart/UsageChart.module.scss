@@ -1,0 +1,22 @@
+@import "styles/common";
+
+.usageChart {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .chartContainer {
+    display: flex;
+    height: 16px;
+    border-radius: 4px;
+    overflow: hidden;
+
+    .chartItem {
+      transition: opacity 0.3s;
+    }
+  }
+
+  .subtitle {
+    color: $black-50;
+  }
+}
