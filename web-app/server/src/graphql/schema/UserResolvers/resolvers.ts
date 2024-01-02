@@ -9,6 +9,11 @@ import {
     RefreshTokenInstance,
     SessionStatusType,
 } from "../../../db/models/UserData/Session";
+import {
+    getFindOptionsFromProps,
+    getQueryFromRangeFilter,
+    getQueryFromSearchFilter,
+} from "../util";
 import { AccountStatusType } from "../../../db/models/UserData/User";
 import { AuthenticationError } from "apollo-server-express";
 import { FindOptions } from "sequelize";
@@ -127,11 +132,36 @@ export const UserResolvers: Resolvers = {
             }
             throw new ForbiddenError("User doesn't have permissions");
         },
-        users: async (parent, { pagination }, { models, sessionInfo }) => {
-            if (!sessionInfo || !sessionInfo.permissions.includes("VIEW_ADMIN_INFO")) {
-                throw new ForbiddenError("User don't have permission");
+        users: async (parent, { props }, { models, sessionInfo }) => {
+            if (!sessionInfo) {
+                throw new AuthenticationError("User must be authorized");
             }
-            return await models.User.findAll(pagination);
+
+            if (!sessionInfo.permissions.includes("VIEW_ADMIN_INFO")) {
+                throw new ForbiddenError("User doesn't have permissions");
+            }
+
+            const options = getFindOptionsFromProps(
+                props,
+                {
+                    fullName: (value) => ({
+                        fullName: getQueryFromSearchFilter(value),
+                    }),
+                    country: (value) => ({ isBuiltIn: getQueryFromSearchFilter(value) }),
+                    includeDeleted: (value) => ({ paranoid: value }),
+                    registrationTime: (value) => ({
+                        createdAt: getQueryFromRangeFilter(value),
+                    }),
+                },
+                {
+                    FULL_NAME: "fullName",
+                    COUNTRY: "country",
+                    CREATION_TIME: "createdAt",
+                    STATUS: "accountStatus",
+                }
+            );
+
+            return await models.User.findAll(options);
         },
         sessions: async (parent, { pagination, onlyValid }, { models, sessionInfo }) => {
             if (!sessionInfo || !sessionInfo.permissions.includes("VIEW_ADMIN_INFO")) {

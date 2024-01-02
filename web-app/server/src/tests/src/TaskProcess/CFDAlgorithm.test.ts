@@ -8,7 +8,7 @@ const getDefaultCFDFilter = (
     pagination: { offset: 0, limit: 10 },
     filterString: "",
     withoutKeys,
-    orderBy: "ASC",
+    orderDirection: "ASC",
     CFDSortBy: "RHS_COL_NAME",
 });
 

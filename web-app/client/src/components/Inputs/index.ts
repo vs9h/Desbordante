@@ -1,4 +1,5 @@
 import Checkbox from './Checkbox';
+import DateTime from './DateTime';
 import MultiSelect from './MultiSelect';
 import NumberInput from './NumberInput';
 import NumberSlider from './NumberSlider';
@@ -19,4 +20,5 @@ export {
   NumberSlider,
   NumberInput,
   MultiSelect,
+  DateTime,
 };

@@ -8,14 +8,14 @@ import {
 } from '@graphql/operations/queries/__generated__/GetMFDTaskInfo';
 import { GET_MFD_TASK_INFO } from '@graphql/operations/queries/getMFDTaskInfo';
 import { showError } from '@utils/toasts';
-import { MFDSortBy, OrderBy } from 'types/globalTypes';
+import { MFDSortBy, OrderDirection } from 'types/globalTypes';
 
 const useMFDTask = (
   taskID: string,
   clusterIndex = 0,
   limit = 150,
   sortBy = MFDSortBy.MAXIMUM_DISTANCE,
-  orderBy = OrderBy.ASC
+  orderDirection = OrderDirection.ASC
 ) => {
   const [MFDTask, setMFDTask] = useAtom(MFDAtom);
   const [loadMFDData, { loading, error, data }] = useLazyQuery<
@@ -28,7 +28,7 @@ const useMFDTask = (
       offset: 0,
       limit,
       sortBy,
-      orderBy,
+      orderDirection,
     },
     onError: (error) => {
       console.error(error);
@@ -68,7 +68,7 @@ const useMFDTask = (
           clusterIndex,
           limit,
           sortBy,
-          orderBy
+          orderDirection
         ),
         result: taskResult.result || false,
         clustersTotalCount: taskResult.depsAmount || 0,

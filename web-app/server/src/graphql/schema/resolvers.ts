@@ -1,3 +1,4 @@
+import { AdminResolvers } from "./AdminResolvers/resolvers";
 import { AppConfigResolvers } from "./AppConfiguration/resolvers";
 import { GraphQLUpload } from "graphql-upload";
 import { MetaInfoResolvers } from "./MetaInfoResolvers/resolvers";
@@ -12,7 +13,8 @@ export const resolvers = merge(
     TaskCreatingResolvers,
     MetaInfoResolvers,
     { Upload: GraphQLUpload },
-    UserResolvers
+    UserResolvers,
+    AdminResolvers
 );
 
 export default resolvers;

@@ -403,7 +403,7 @@ const typeDefs = gql`
         """
         All deps
         """
-        orderBy: OrderBy!
+        orderDirection: OrderDirection!
         """
         All deps. Can be null, but only for downloadResults mutation
         """
@@ -480,7 +480,7 @@ const typeDefs = gql`
         FURTHEST_POINT_INDEX
         MAXIMUM_DISTANCE
     }
-    enum OrderBy {
+    enum OrderDirection {
         ASC
         DESC
     }
@@ -606,9 +606,89 @@ const typeDefs = gql`
         datasetInfo: DatasetInfo!
     }
 
+    input StringRange {
+        from: String
+        to: String
+    }
+
+    input IntRange {
+        from: Int
+        to: Int
+    }
+
+    input DatasetsQueryFilters {
+        searchString: String
+        includeBuiltIn: Boolean! = true
+        includeDeleted: Boolean
+        period: StringRange
+        fileSize: IntRange
+    }
+
+    enum DatasetsQueryOrderingParameter {
+        FILE_NAME
+        FILE_SIZE
+        CREATION_TIME
+        USER
+    }
+
+    input DatasetsQueryOrdering {
+        parameter: DatasetsQueryOrderingParameter!
+        direction: OrderDirection!
+    }
+
     input DatasetsQueryProps {
-        includeBuiltInDatasets: Boolean! = true
-        includeDeletedDatasets: Boolean! = false
+        filters: DatasetsQueryFilters! = {}
+        ordering: DatasetsQueryOrdering! = {}
+        pagination: Pagination! = { offset: 0, limit: 10 }
+    }
+
+    input TasksQueryFilters {
+        searchString: String
+        includeDeleted: Boolean
+        elapsedTime: IntRange
+        period: StringRange
+    }
+
+    enum TasksQueryOrderingParameter {
+        ELAPSED_TIME
+        STATUS
+        CREATION_TIME
+        USER
+    }
+
+    input TasksQueryOrdering {
+        parameter: TasksQueryOrderingParameter!
+        direction: OrderDirection!
+    }
+
+    input TasksQueryProps {
+        filters: TasksQueryFilters! = {}
+        ordering: TasksQueryOrdering! = {}
+        pagination: Pagination! = { offset: 0, limit: 10 }
+    }
+
+    input UsersQueryFilters {
+        fullName: String
+        country: String
+        includeDeleted: Boolean
+        registrationTime: StringRange
+    }
+
+    enum UsersQueryOrderingParameter {
+        FULL_NAME
+        COUNTRY
+        STATUS
+        CREATION_TIME
+    }
+
+    input UsersQueryOrdering {
+        parameter: UsersQueryOrderingParameter!
+        direction: OrderDirection!
+    }
+
+    input UsersQueryProps {
+        filters: UsersQueryFilters! = {}
+        ordering: UsersQueryOrdering! = {}
         pagination: Pagination! = { offset: 0, limit: 10 }
     }
 
@@ -637,6 +717,56 @@ const typeDefs = gql`
         quantile25: String
         quantile50: String
         quantile75: String
+    }
+
+    enum PeriodGranularity {
+        HOUR
+        DAY
+        WEEK
+        MONTH
+        YEAR
+    }
+
+    input AggregationConfig {
+        from: String
+        to: String
+        granularity: PeriodGranularity!
+    }
+
+    interface GeneralStatisticsEntry {
+        from: String!
+        to: String!
+    }
+
+    type StatisticsUsersEntry implements GeneralStatisticsEntry {
+        from: String!
+        to: String!
+        totalUsers: Int!
+        newUsers: Int!
+        activeUsers: Int!
+        logIns: Int!
+    }
+
+    type StatisticsTasksEntry implements GeneralStatisticsEntry {
+        from: String!
+        to: String!
+        totalTasks: Int!
+        successfullyExecutedNewTasks: Int!
+        failedNewTasks: Int!
+    }
+
+    type StatisticsFilesEntry implements GeneralStatisticsEntry {
+        from: String!
+        to: String!
+        totalSpaceOccupied: Int!
+        totalFiles: Int!
+        newFiles: Int!
+    }
+
+    type Aggregations {
+        users(config: AggregationConfig!): [StatisticsUsersEntry!]
+        tasks(config: AggregationConfig!): [StatisticsTasksEntry!]
+        files(config: AggregationConfig!): [StatisticsFilesEntry!]
     }
 
     """
@@ -726,16 +856,21 @@ const typeDefs = gql`
         """
         Query for admins with permission "VIEW_ADMIN_INFO"
         """
-        tasksInfo(pagination: Pagination!): [AbstractTaskInfo!]
+        tasksInfo(props: TasksQueryProps!): [AbstractTaskInfo!]
         user(userID: ID): User
         """
         Query for admins with permission "VIEW_ADMIN_INFO"
         """
-        users(pagination: Pagination!): [User!]!
+        users(props: UsersQueryProps!): [User!]!
         """
         Query for admins with permission "VIEW_ADMIN_INFO"
         """
         sessions(pagination: Pagination!, onlyValid: Boolean! = true): [Session]!
+
+        """
+        Query for admins with permission "VIEW_ADMIN_INFO"
+        """
+        aggregations: Aggregations!
     }
 
     input FileProps {
@@ -870,6 +1005,22 @@ const typeDefs = gql`
 
     union ChangePasswordAnswer = TokenPair | SuccessfulMessage
 
+    input MessageData {
+        subject: String!
+        body: String!
+    }
+
+    enum SendMesssageStatus {
+        OK
+        ERROR
+    }
+
+    type SendMessageAnswer {
+        status: SendMesssageStatus!
+        accepted: [String!]
+        rejected: [String!]
+    }
+
     type Mutation {
         """
         After creating new account user will have anonymous permissions;
@@ -999,6 +1150,11 @@ const typeDefs = gql`
         Admins can remove info about all stats tasks.
         """
         deleteStatsInfo(fileID: String!): String!
+
+        """
+        Query for admins with permission "VIEW_ADMIN_INFO"
+        """
+        sendMessage(userIDs: [ID!], messageData: MessageData!): SendMessageAnswer!
     }
 `;
 

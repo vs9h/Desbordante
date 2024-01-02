@@ -28,7 +28,7 @@ import { GET_MAIN_TASK_DEPS } from '@graphql/operations/queries/getDeps';
 import { GET_TASK_INFO } from '@graphql/operations/queries/getTaskInfo';
 import styles from '@styles/Dependencies.module.scss';
 import { convertDependencies } from '@utils/convertDependencies';
-import { IntersectionFilter, OrderBy, PrimitiveType } from 'types/globalTypes';
+import { IntersectionFilter, OrderDirection, PrimitiveType } from 'types/globalTypes';
 import { NextPageWithLayout } from 'types/pageWithLayout';
 
 type Props = {
@@ -70,7 +70,7 @@ const ReportsDependencies: NextPageWithLayout<Props> = ({ defaultData }) => {
       filterString: search,
       pagination: { limit: 10, offset: (page - 1) * 10 },
       ...sortingParams,
-      orderBy: direction,
+      orderDirection: direction,
       mustContainRhsColIndices: mustContainRhsColIndices.length
         ? mustContainRhsColIndices
         : null,
@@ -209,7 +209,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           filterString: '',
           pagination: { limit: 10, offset: 0 },
           ...sortingParams,
-          orderBy: OrderBy.ASC,
+          orderDirection: OrderDirection.ASC,
         },
       },
     });

@@ -1,0 +1,16 @@
+@import "styles/common";
+
+.statistics {
+  max-width: 356px;
+  width: 100%;
+
+  .title {
+    margin: 0 0 32px;
+  }
+
+  .charts {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+}

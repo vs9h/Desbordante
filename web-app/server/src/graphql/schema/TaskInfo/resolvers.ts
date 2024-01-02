@@ -11,6 +11,11 @@ import {
 } from "../../../db/models/TaskData/configs/GeneralTaskConfig";
 import { OverviewData, Resolvers, TaskProcessStatusType } from "../../types/types";
 import { applyPagination, resolverCannotBeCalled, returnParent } from "../../util";
+import {
+    getFindOptionsFromProps,
+    getQueryFromRangeFilter,
+    getQueryFromSearchFilter,
+} from "../util";
 import { AbstractFilter } from "./DependencyFilters/AbstractFilter";
 import { AuthenticationError } from "apollo-server-express";
 import { CompactData } from "./DependencyFilters/CompactData";
@@ -685,12 +690,38 @@ export const TaskInfoResolvers: Resolvers = {
             }
             throw new ForbiddenError("User doesn't have permissions");
         },
-        tasksInfo: async (parent, { pagination }, { models, sessionInfo }) => {
-            if (!sessionInfo || !sessionInfo.permissions.includes("VIEW_ADMIN_INFO")) {
-                throw new AuthenticationError("User doesn't have permissions");
+        tasksInfo: async (parent, { props }, { models, sessionInfo }) => {
+            if (!sessionInfo) {
+                throw new AuthenticationError("User must be authorized");
             }
+            if (!sessionInfo.permissions.includes("VIEW_ADMIN_INFO")) {
+                throw new ForbiddenError("User doesn't have permissions");
+            }
+
+            const options = getFindOptionsFromProps(
+                props,
+                {
+                    searchString: (value) => ({
+                        taskId: getQueryFromSearchFilter(value),
+                    }),
+                    includeDeleted: (value) => ({ paranoid: value }),
+                    period: (value) => ({
+                        createdAt: getQueryFromRangeFilter(value),
+                    }),
+                    elapsedTime: (value) => ({
+                        elapsedTime: getQueryFromRangeFilter(value),
+                    }),
+                },
+                {
+                    ELAPSED_TIME: "elapsedTime",
+                    STATUS: "status",
+                    CREATION_TIME: "createdAt",
+                    USER: "userID",
+                }
+            );
+
             const configs = await models.GeneralTaskConfig.findAll({
-                ...pagination,
+                ...options,
                 attributes: ["taskID", "fileID", ["type", "prefix"]],
                 raw: true,
             });

@@ -3,37 +3,44 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, useRef } from 'react';
+import { useAuthContext } from '@hooks/useAuthContext';
 import logo from '@public/logo.svg';
+import { User } from 'types/auth';
 import styles from './NavBar.module.scss';
 
 type Route = {
   label: string;
-  path: string;
-  redirectTo?: string;
+  pathname: string;
+  resolver?: (user?: User) => boolean;
 };
 
 const routes: Route[] = [
   {
     label: 'Discover',
-    path: '/create-task/',
-    redirectTo: '/create-task/choose-primitive',
+    pathname: '/create-task',
   },
   {
     label: 'Papers',
-    path: '/papers',
+    pathname: '/papers',
   },
   {
     label: 'Team',
-    path: '/team',
+    pathname: '/team',
+  },
+  {
+    label: 'Admin Panel',
+    pathname: '/admin-panel',
+    resolver: (user) => Boolean(user?.permissions.canViewAdminInfo),
   },
 ];
 
 const NavBar: FC = () => {
-  const widths = useRef([...new Array(routes.length)]);
+  const widths = useRef<Map<string, number>>(new Map());
   const router = useRouter();
+  const { user } = useAuthContext();
 
-  const selectedRouteIndex = routes.findIndex(({ path }) =>
-    router.pathname.includes(path)
+  const selectedRouteIndex = routes.findIndex(({ pathname }) =>
+    router.pathname.includes(pathname),
   );
 
   return (
@@ -52,21 +59,25 @@ const NavBar: FC = () => {
           </Link>
         </li>
 
-        {routes.map(({ label, path, redirectTo }, index) => (
-          <li
-            key={path}
-            className={cn(
-              styles.underline,
-              index === selectedRouteIndex && styles.selected
-            )}
-            ref={(node) => {
-              widths.current[index] = node?.offsetWidth ?? 0;
-            }}
-            style={{ width: widths.current[index] }}
-          >
-            <Link href={redirectTo ?? path}>{label}</Link>
-          </li>
-        ))}
+        {routes
+          .filter(({ resolver }) => resolver?.(user) ?? true)
+          .map(({ label, pathname }, index) => (
+            <li
+              key={pathname}
+              className={cn(
+                styles.underline,
+                index === selectedRouteIndex && styles.selected,
+              )}
+              ref={(node) => {
+                if (node) {
+                  widths.current.set(pathname, node.offsetWidth);
+                }
+              }}
+              style={{ width: widths.current.get(pathname) }}
+            >
+              <Link href={pathname}>{label}</Link>
+            </li>
+          ))}
       </ul>
     </nav>
   );

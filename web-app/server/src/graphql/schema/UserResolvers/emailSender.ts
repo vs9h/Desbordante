@@ -1,11 +1,7 @@
 import { Code, CodeType } from "../../../db/models/UserData/Code";
 import { ApolloError } from "apollo-server-core";
 import config from "../../../config";
-import nodemailer from "nodemailer";
-
-const transporter = nodemailer.createTransport(
-  { ...config.hosts.postfix, ignoreTLS: true }
-);
+import { transporter } from "../../../nodemailer";
 
 export const sendVerificationCode = async (
     code: number,

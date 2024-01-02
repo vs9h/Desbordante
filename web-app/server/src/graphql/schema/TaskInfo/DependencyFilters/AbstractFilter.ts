@@ -52,7 +52,7 @@ export abstract class AbstractFilter<CompactDep, Dep> {
         deps = (await this.filterDeps(deps)) || [];
         const filteredDepsAmount = deps.length;
         deps = deps.sort(await this.getComparator());
-        this.filter.orderBy === "DESC" && deps.reverse();
+        this.filter.orderDirection === "DESC" && deps.reverse();
         deps = applyPagination(deps, this.filter.pagination, 500);
         deps = await this.applyTransformation(deps);
         return { filteredDepsAmount, deps };

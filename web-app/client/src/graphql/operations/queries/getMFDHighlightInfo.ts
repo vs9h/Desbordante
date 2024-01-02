@@ -18,7 +18,7 @@ export const GET_MFD_HIGHLIGHT_INFO = gql`
               filteredDeps(
                 filter: {
                   MFDSortBy: MAXIMUM_DISTANCE
-                  orderBy: ASC
+                  orderDirection: ASC
                   filterString: $rowFilter
                   pagination: { offset: 0, limit: 10 }
                   MFDClusterIndex: $clusterIndex
