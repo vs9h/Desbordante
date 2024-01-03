@@ -8,12 +8,10 @@ import { AFDSortRowsBy, OrderBy } from 'types/globalTypes';
 import { FiltersFields } from './Filters';
 
 type VisibilityProps = {
-  setIsVisibilityShown: (arg: boolean) => void;
+  onCloseWindow: () => void;
 };
 
-export const VisibilityWindow: FC<VisibilityProps> = ({
-  setIsVisibilityShown,
-}) => {
+export const VisibilityWindow: FC<VisibilityProps> = ({ onCloseWindow }) => {
   const baseForm = useFormContext();
 
   const { control, watch, reset } = useForm<Partial<FiltersFields>>({
@@ -26,7 +24,6 @@ export const VisibilityWindow: FC<VisibilityProps> = ({
   const initialShowOnlyLRHS = watch('showOnlyLRHS') as boolean;
   const [isShowOnlyLRHS, setShowOnlyLRHS] = useState(initialShowOnlyLRHS);
   const { rowsOrdering, direction } = watch();
-  console.log(rowsOrdering);
 
   const orderingOptions = [
     { value: AFDSortRowsBy.RHS_VALUES, label: 'RHS values' },
@@ -43,13 +40,13 @@ export const VisibilityWindow: FC<VisibilityProps> = ({
       name="Visibility"
       onClose={() => {
         reset();
-        setIsVisibilityShown(false);
+        onCloseWindow();
       }}
       onApply={() => {
         baseForm.setValue('rowsOrdering', rowsOrdering);
         baseForm.setValue('direction', direction);
         baseForm.setValue('showOnlyLRHS', isShowOnlyLRHS);
-        setIsVisibilityShown(false);
+        onCloseWindow();
       }}
     >
       <Checkbox
@@ -60,7 +57,7 @@ export const VisibilityWindow: FC<VisibilityProps> = ({
       <ControlledSelect
         control={control}
         controlName="rowsOrdering"
-        label={'Order rows by'}
+        label="Order rows by"
         options={orderingOptions}
       />
       <ControlledSelect

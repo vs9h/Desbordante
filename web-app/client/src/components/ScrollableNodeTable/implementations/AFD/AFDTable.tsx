@@ -41,7 +41,7 @@ const getAFDRow: (row: AFDTableRow, position: number) => Row = (
 ) => {
   return {
     items: [
-      row.isFrequent ? ( // icon
+      row.isFrequent ? (
         <Check className={styles.checkmark} height={20} width={20} />
       ) : (
         <Cross height={20} width={20} />

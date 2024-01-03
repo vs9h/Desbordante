@@ -1,15 +1,6 @@
 import { useQuery } from '@apollo/client';
-import { useEffect, useMemo } from 'react';
 import badgeStyles from '@components/Inputs/MultiSelect/OptionBadge/OptionBadge.module.scss';
-import {
-  MFDAlgoOptions,
-  MFDColumnType,
-  MFDColumnTypeOptions,
-  MFDDistancesOptions,
-  MFDMetricOption,
-  MFDMetricOptions,
-  optionsByMetrics,
-} from '@constants/options';
+import { AFDOptions } from '@constants/options';
 import {
   getCountOfColumns,
   getCountOfColumns_datasetInfo_statsInfo_stats,
@@ -17,10 +8,10 @@ import {
 } from '@graphql/operations/queries/__generated__/getCountOfColumns';
 import { GET_COUNT_OF_COLUMNS } from '@graphql/operations/queries/getDatasetColumnCount';
 import { showError } from '@utils/toasts';
+import { useEffect, useMemo } from 'react';
 import {
   Defaults,
   FormFieldsProps,
-  CreateFormProcessor,
   CreateForm,
   FormSelectOptions,
   FormHook,
@@ -28,15 +19,8 @@ import {
 } from 'types/form';
 import { OptionWithBadges } from 'types/multiSelect';
 
-const TypesCategories: Record<string, string> = {
-  Int: 'Numeric',
-  Double: 'Numeric',
-  BigInt: 'Numeric',
-  String: 'String',
-};
-
 const AFDDefaults = {
-  algorithmName: 'ApproximateVerification',
+  algorithmName: 'Naive AFD Verifier',
   lhsIndices: [] as number[],
   rhsIndices: [] as number[],
 } satisfies Defaults;
@@ -56,9 +40,10 @@ const AFDPresets: Presets<typeof AFDDefaults> = [
 const AFDFields = {
   algorithmName: {
     order: 0,
-    type: 'hidden_value',
-    label: '',
-    isDisplayable: false,
+    type: 'select',
+    label: 'Algorithm',
+    isLoading: false,
+    options: AFDOptions,
   },
   lhsIndices: {
     order: 1,
@@ -68,9 +53,8 @@ const AFDFields = {
     isLoading: true as boolean,
     rules: {
       validate: (value) => {
-        if (Array.isArray(value))
-          return value.length > 0 ? undefined : 'Cannot be empty';
-        return undefined;
+        if (Array.isArray(value) && value.length === 0)
+          return 'Cannot be empty';
       },
     },
   },
@@ -138,7 +122,6 @@ const useAFDFormHook: FormHook<typeof AFDDefaults, typeof AFDFields> = (
     }
   }, [columnData, loading, setForm]);
 };
-  
 
 export const AFDForm = CreateForm({
   formDefaults: AFDDefaults,

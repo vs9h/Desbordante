@@ -1,23 +1,15 @@
 @import "styles/common";
 
-.greenHighlighted {
-  background: $success-25 !important; // stylelint-disable-line declaration-no-important
-}
-
 .greenEven {
-  background: $success-05 !important; // stylelint-disable-line declaration-no-important
+  background: $success-05;
 }
 
 .greenOdd {
   background: $success-10 !important; // stylelint-disable-line declaration-no-important
 }
 
-.redHighlighted {
-  background: $error-25 !important; // stylelint-disable-line declaration-no-important
-}
-
 .redEven {
-  background: $error-05 !important; // stylelint-disable-line declaration-no-important
+  background: $error-05;
 }
 
 .redOdd {

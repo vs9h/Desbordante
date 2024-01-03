@@ -3,6 +3,17 @@
 .description {
   display: block;
 
+  ol {
+    list-style: decimal;
+    margin-left: 16px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+
+    li {
+      margin-bottom: 8px;
+    }
+  }
+
   svg {
     transform: translateY(2px);
   }

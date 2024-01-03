@@ -7,33 +7,21 @@ import Button from '@components/Button';
 import { OrderingWindow, useFilters } from '@components/Filters';
 import VisibilityWindow from '@components/Filters/AFDVisibilityWindow';
 import Pagination from '@components/Pagination/Pagination';
+import ReportFiller from '@components/ReportFiller/ReportFiller';
 import ReportsLayout from '@components/ReportsLayout';
 
-import { ScrollDirection } from '@components/ScrollableNodeTable';
 import { AFDTable } from '@components/ScrollableNodeTable/implementations/AFD/AFDTable';
 import styles from '@styles/ApproximateDependencies.module.scss';
 
-import React, {
-  FC,
-  ReactElement,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { ReactElement, useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { PrimitiveType } from 'types/globalTypes';
 import { NextPageWithLayout } from 'types/pageWithLayout';
 import { data } from './AFDFakeData';
+import { Scrolling } from './onScroll';
 
-const ReportsMFD: NextPageWithLayout = () => {
-  const defaultLimit = 150;
-  const shouldIgnoreScrollEvent = useRef(false);
-
-  // TODO: move parameters in one object
+const ReportsAFD: NextPageWithLayout = () => {
   const [clusterIndex, setClusterIndex] = useState(0);
-  const [limit, setLimit] = useState(defaultLimit);
 
   const [isOrderingShown, setIsOrderingShown] = useState(false);
   const [isVisibilityShown, setIsVisibilityShown] = useState(false);
@@ -44,24 +32,7 @@ const ReportsMFD: NextPageWithLayout = () => {
 
   const methods = useFilters(PrimitiveType.AFD);
 
-  useEffect(() => {
-    shouldIgnoreScrollEvent.current = false;
-  });
-  const defaultOffsetDifference = 50;
-
-  const onScroll = useCallback(
-    (direction: ScrollDirection) => {
-      if (!shouldIgnoreScrollEvent.current && direction === 'down') {
-        shouldIgnoreScrollEvent.current = true;
-        if (limit < data.result.clustersTotalCount) {
-          setLimit((limit) => limit + defaultOffsetDifference);
-        } else {
-          shouldIgnoreScrollEvent.current = false;
-        }
-      }
-    },
-    [limit],
-  );
+  const onScroll = Scrolling();
 
   return (
     <>
@@ -77,7 +48,7 @@ const ReportsMFD: NextPageWithLayout = () => {
         )}
 
         {isVisibilityShown && (
-          <VisibilityWindow setIsVisibilityShown={setIsVisibilityShown} />
+          <VisibilityWindow onCloseWindow={() => setIsVisibilityShown(false)} />
         )}
       </FormProvider>
 
@@ -86,10 +57,8 @@ const ReportsMFD: NextPageWithLayout = () => {
         <>
           {!clustersTotalCount && data.result && (
             <ReportFiller
-              title={
-                'No clusters have been discovered (functional dependency holds)'
-              }
-              description={'Try restarting the task with different parameters'}
+              title="No clusters have been discovered (functional dependency holds)"
+              description="Try restarting the task with different parameters"
               icon={<Arrow />}
             />
           )}
@@ -166,28 +135,8 @@ const ReportsMFD: NextPageWithLayout = () => {
   );
 };
 
-ReportsMFD.getLayout = function getLayout(page: ReactElement) {
+ReportsAFD.getLayout = function getLayout(page: ReactElement) {
   return <ReportsLayout>{page}</ReportsLayout>;
 };
 
-type ReportFillerProps = {
-  title: string;
-  description?: string;
-  icon?: ReactNode;
-};
-
-const ReportFiller: FC<ReportFillerProps> = ({ title, description, icon }) => {
-  return (
-    <div className={styles.container}>
-      <div className={styles.filler}>
-        {icon && <div className={styles.icon}>{icon}</div>}
-        <div className={styles.text}>
-          <h6>{title}</h6>
-          {description && <p>{description}</p>}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default ReportsMFD;
+export default ReportsAFD;
