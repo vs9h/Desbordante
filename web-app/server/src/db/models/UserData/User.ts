@@ -1,18 +1,12 @@
-import {
-    Column,
-    HasMany,
-    IsEmail,
-    IsUUID,
-    Model,
-    Table,
-} from "sequelize-typescript";
+import { Column, HasMany, IsEmail, IsUUID, Model, Table } from "sequelize-typescript";
 import { Role, RoleType } from "./Role";
-import { STRING, UUID, UUIDV4 } from "sequelize";
+import { INTEGER, STRING, UUID, UUIDV4, VIRTUAL } from "sequelize";
 import { Session, SessionStatusType } from "./Session";
 import { Feedback } from "./Feedback";
 import { FileInfo } from "../FileData/FileInfo";
 import { Permission } from "./Permission";
 import { TaskState } from "../TaskData/TaskState";
+import config from "../../../config";
 
 const ALL_ACCOUNT_STATUS = ["EMAIL_VERIFICATION", "EMAIL_VERIFIED"] as const;
 export type AccountStatusType = typeof ALL_ACCOUNT_STATUS[number];
@@ -25,6 +19,8 @@ interface UserModelMethods {
     addRoles: (roles: RoleType[]) => Promise<Role[]>;
     createSession: (deviceID: string) => Promise<Session>;
 }
+
+const defaultReservedDiskSpace = config.appConfig.fileConfig.userDiskLimit;
 
 @Table({
     tableName: "Users",
@@ -47,6 +43,20 @@ export class User extends Model implements UserModelMethods {
 
     @HasMany(() => FileInfo)
     files?: [FileInfo];
+
+    @Column({
+        type: INTEGER,
+        allowNull: false,
+        defaultValue: defaultReservedDiskSpace,
+    })
+    reservedDiskSpace!: number;
+
+    @Column({
+        type: INTEGER,
+        allowNull: false,
+        defaultValue: defaultReservedDiskSpace,
+    })
+    remainingDiskSpace!: number;
 
     @HasMany(() => Role)
     roles?: [Role];
@@ -97,9 +107,7 @@ export class User extends Model implements UserModelMethods {
         if (~roleIdx) {
             return roles[roleIdx];
         }
-        const permissionIndices = JSON.stringify(
-            Role.getPermissionIndicesForRole(role)
-        );
+        const permissionIndices = JSON.stringify(Role.getPermissionIndicesForRole(role));
         return (await this.$create("role", {
             type: role,
             permissionIndices,
@@ -112,5 +120,14 @@ export class User extends Model implements UserModelMethods {
     createSession = async (deviceID: string) => {
         const status: SessionStatusType = "VALID";
         return await Session.create({ userID: this.userID, status, deviceID });
+    };
+
+    recomputeRemainingDiskSpace = async () => {
+        const files: FileInfo[] = (await this.$get("files")) ?? [];
+        const occupiedSpace = files.reduce((acc, curr) => acc + curr.fileSize, 0);
+
+        return this.update({
+            remainingDiskSpace: this.reservedDiskSpace - occupiedSpace,
+        });
     };
 }

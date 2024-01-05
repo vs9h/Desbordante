@@ -75,8 +75,7 @@ export abstract class AbstractCreator<
         protected readonly type: DBTaskPrimitiveType,
         protected context: Context,
         protected forceCreate: boolean,
-        protected fileInfo: FileInfo,
-        protected userID?: string
+        protected fileInfo: FileInfo
     ) {}
 
     protected models = () => this.context.models;
@@ -155,7 +154,7 @@ export abstract class AbstractCreator<
 
     private saveToDB = async () => {
         const status: TaskStatusType = "ADDING_TO_DB";
-        const userID = this.userID;
+        const userID = this.context.sessionInfo?.userID;
         const { fileID } = this.fileInfo;
         const taskState = await this.context.models.TaskState.create({
             status,
@@ -190,6 +189,7 @@ export abstract class AbstractCreator<
         const task = await this.saveToDB();
         const { taskID } = task;
 
+        await this.fileInfo.recomputeNumberOfUses();
         await produce({ taskID }, this.context.topicNames.tasks);
         task.status = "ADDED_TO_THE_TASK_QUEUE";
         await task.save();

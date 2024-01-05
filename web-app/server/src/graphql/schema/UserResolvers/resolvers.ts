@@ -11,9 +11,10 @@ import {
 } from "../../../db/models/UserData/Session";
 import { AccountStatusType } from "../../../db/models/UserData/User";
 import { AuthenticationError } from "apollo-server-express";
-import { FindOptions } from "sequelize";
+import { FindOptions, Op } from "sequelize";
 import { Permission } from "../../../db/models/UserData/Permission";
 import { Role } from "../../../db/models/UserData/Role";
+import { TaskState } from "../../../db/models/TaskData/TaskState";
 import config from "../../../config";
 import { createAndSendVerificationCode } from "./emailSender";
 import jwt from "jsonwebtoken";
@@ -57,23 +58,55 @@ export const UserResolvers: Resolvers = {
             }
             return await models.Feedback.findAll({ where: { userID } });
         },
-        tasks: async ({ userID }, _, { models }) => {
+        tasks: async ({ userID }, { pagination, withDeleted }, { models }) => {
             if (!userID) {
                 throw new ApolloError("UserID is undefined");
             }
+
             const configs = await models.GeneralTaskConfig.findAll({
-                where: { userID },
-                paranoid: true,
-                attributes: ["taskID", "fileID", ["type", "propertyPrefix"]],
+                where: { "$taskState.userID$": userID },
+                include: {
+                    model: TaskState,
+                    attributes: ["userID"],
+                },
+                paranoid: !withDeleted,
+                ...pagination,
+                attributes: ["taskID", "fileID", ["type", "prefix"]],
             });
             return configs as (GeneralTaskConfig & {
                 prefix: MainPrimitiveType;
             })[];
         },
-        datasets: async ({ userID }, _, { models }) => {
+        datasets: async ({ userID }, { filter, sort, pagination }, { models }) => {
             if (!userID) {
                 throw new ApolloError("UserID is undefined");
             }
+
+            const options: FindOptions = {
+                where: {
+                    userID,
+                    isValid: true,
+                },
+                ...pagination,
+            };
+
+            if (filter) {
+                options.where = {
+                    originalFileName: {
+                        [Op.iLike]: `%${filter.originalFileName}%`,
+                    },
+                };
+            }
+
+            if (sort) {
+                const sortKey = {
+                    ORIGINAL_FILE_NAME: "originalFileName",
+                    USAGE_FREQUENCY: "numberOfUses",
+                    FILE_SIZE: "fileSize",
+                }[sort.sortBy];
+                options.order = [[sortKey, sort.orderBy]];
+            }
+
             return await models.FileInfo.findAll({
                 where: {
                     userID,
@@ -329,9 +362,12 @@ export const UserResolvers: Resolvers = {
                 throw new UserInputError(`Email ${props.email} already used`);
             }
             const accountStatus: AccountStatusType = "EMAIL_VERIFICATION";
+            const { userDiskLimit } = config.appConfig.fileConfig;
+
             const newUser = await models.User.create({
                 ...props,
                 accountStatus,
+                reservedDiskSpace: userDiskLimit,
             });
             await newUser.addRole("ANONYMOUS");
 
@@ -340,6 +376,19 @@ export const UserResolvers: Resolvers = {
             logger("New account created");
             const tokens = await session.issueTokenPair();
             return { message: "New account created", tokens };
+        },
+        updateUser: async (parent, { props }, { models, sessionInfo }) => {
+            if (!sessionInfo) {
+                throw new AuthenticationError("User must be authorized");
+            }
+
+            await models.User.update(props, {
+                where: {
+                    userID: sessionInfo.userID,
+                },
+            });
+
+            return { message: "User info updated" };
         },
         approveUserEmail: async (
             parent,
