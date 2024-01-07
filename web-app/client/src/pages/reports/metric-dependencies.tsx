@@ -1,16 +1,3 @@
-import _ from 'lodash';
-import { useRouter } from 'next/router';
-import React, {
-  FC,
-  ReactElement,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { useForm } from 'react-hook-form';
-
 import EyeIcon from '@assets/icons/eye.svg?component';
 import ArrowCrossed from '@assets/icons/line-arrow-right-crossed.svg?component';
 import Arrow from '@assets/icons/line-arrow-right.svg?component';
@@ -21,6 +8,7 @@ import Button from '@components/Button';
 import { ControlledSelect } from '@components/Inputs/Select';
 import ListPropertiesModal from '@components/ListPropertiesModal';
 import Pagination from '@components/Pagination/Pagination';
+import ReportFiller from '@components/ReportFiller/ReportFiller';
 import ReportsLayout from '@components/ReportsLayout';
 
 import { ScrollDirection } from '@components/ScrollableNodeTable';
@@ -29,8 +17,18 @@ import useMFDHighlight from '@hooks/useMFDHighlight';
 import useMFDTask from '@hooks/useMFDTask';
 import styles from '@styles/MetricDependencies.module.scss';
 
+import _ from 'lodash';
+import { useRouter } from 'next/router';
+import React, {
+  FC,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useForm } from 'react-hook-form';
 import { MFDSortBy, OrderBy } from 'types/globalTypes';
-
 import { NextPageWithLayout } from 'types/pageWithLayout';
 
 type InsertedRow =
@@ -60,7 +58,7 @@ const ReportsMFD: NextPageWithLayout = () => {
     clusterIndex,
     limit,
     sortBy,
-    orderBy
+    orderBy,
   );
 
   useEffect(() => {
@@ -130,7 +128,7 @@ const ReportsMFD: NextPageWithLayout = () => {
         },
       });
     },
-    [loadMFDHighlight, taskID, clusterIndex]
+    [loadMFDHighlight, taskID, clusterIndex],
   );
 
   const closeInsertedRow = useCallback(() => {
@@ -149,7 +147,7 @@ const ReportsMFD: NextPageWithLayout = () => {
         }
       }
     },
-    [data.cluster.highlightsTotalCount, limit]
+    [data.cluster.highlightsTotalCount, limit],
   );
 
   return (
@@ -240,26 +238,6 @@ const ReportsMFD: NextPageWithLayout = () => {
 
 ReportsMFD.getLayout = function getLayout(page: ReactElement) {
   return <ReportsLayout>{page}</ReportsLayout>;
-};
-
-type ReportFillerProps = {
-  title: string;
-  description?: string;
-  icon?: ReactNode;
-};
-
-const ReportFiller: FC<ReportFillerProps> = ({ title, description, icon }) => {
-  return (
-    <div className={styles.container}>
-      <div className={styles.filler}>
-        {icon && <div className={styles.icon}>{icon}</div>}
-        <div className={styles.text}>
-          <h6>{title}</h6>
-          {description && <p>{description}</p>}
-        </div>
-      </div>
-    </div>
-  );
 };
 
 type OrderingProps = {

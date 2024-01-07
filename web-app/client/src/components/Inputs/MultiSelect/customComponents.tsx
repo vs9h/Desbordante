@@ -16,7 +16,7 @@ import {
   NoticeProps,
 } from 'react-select';
 import ChevronDownIcon from '@assets/icons/arrow-down.svg?component';
-import EmptyButton from '@assets/icons/close.svg?component';
+import EmptyButton from '@assets/icons/cross.svg?component';
 import { InputPropsBase } from '@components/Inputs';
 import badgeStyles from '@components/Inputs/MultiSelect/OptionBadge/OptionBadge.module.scss';
 import { OptionWithBadges } from 'types/multiSelect';

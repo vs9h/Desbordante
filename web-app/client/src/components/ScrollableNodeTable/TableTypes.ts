@@ -17,4 +17,5 @@ export type TableProps = {
   hiddenColumnIndices?: number[];
   onScroll?: (direction: ScrollDirection) => void;
   className?: string;
+  alternateRowColors?: boolean;
 };

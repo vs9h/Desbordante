@@ -23,6 +23,7 @@ const Table: FC<TableProps> = ({
   hiddenColumnIndices,
   onScroll,
   className,
+  alternateRowColors = true,
 }) => {
   const threshold = 200;
 
@@ -44,23 +45,23 @@ const Table: FC<TableProps> = ({
 
   const displayHeader = useMemo(
     () => header || data[0].items.map((_, index) => `Column ${index}`),
-    [header, data]
+    [header, data],
   );
 
   const highlightedRowsMap = useMemo(
     () => mapFromArray(highlightRowIndices),
-    [highlightRowIndices]
+    [highlightRowIndices],
   );
 
   const highlightedColumnsMap = useMemo(
     () => mapFromArray(highlightColumnIndices),
-    [highlightColumnIndices]
+    [highlightColumnIndices],
   );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnScroll = useCallback(
     _.debounce(onScroll || (async () => undefined), 500),
-    [onScroll]
+    [onScroll],
   );
 
   const handleScroll: UIEventHandler<HTMLDivElement> = (event) => {
@@ -94,7 +95,7 @@ const Table: FC<TableProps> = ({
     >
       <table className={styles.table}>
         <thead>
-          <tr>
+          <tr className={classNames(alternateRowColors && styles.alternate)}>
             {displayHeader.map((item, columnIndex) => (
               <td
                 key={item}
@@ -102,7 +103,7 @@ const Table: FC<TableProps> = ({
                   columnIndex in highlightedColumnsMap && styles.highlighted,
                   hiddenColumnIndices &&
                     hiddenColumnIndices.includes(columnIndex) &&
-                    styles.hidden
+                    styles.hidden,
                 )}
               >
                 {item}
@@ -127,7 +128,7 @@ const Table: FC<TableProps> = ({
                         styles.highlighted,
                       hiddenColumnIndices &&
                         hiddenColumnIndices.includes(columnIndex) &&
-                        styles.hidden
+                        styles.hidden,
                     )}
                   >
                     {item}

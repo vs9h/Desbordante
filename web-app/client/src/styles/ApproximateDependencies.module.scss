@@ -1,11 +1,16 @@
 @import "styles/common";
 
+.subHeader {
+  @include paragraph;
+  display: flex;
+  gap: 16px;
+}
+
 .filters {
   flex-direction: row;
   gap: 16px;
   display: flex;
   align-items: flex-end;
-  //margin-top: 32px;
 
   .buttons {
     gap: 16px;

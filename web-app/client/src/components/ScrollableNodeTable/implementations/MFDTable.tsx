@@ -66,7 +66,7 @@ const getMFDRow: (
       highlight.withinLimit ? ( // icon
         <Check className={styles.checkmark} height={20} width={20} />
       ) : (
-        <Cross height={20} width={20} />
+        <Cross className={styles.cross} height={20} width={20} />
       ),
       highlight.maximumDistance, // maximum distance
       highlight.index, // index
