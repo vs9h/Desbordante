@@ -1,41 +1,35 @@
 @import "styles/common";
 
 .greenHighlighted {
-  background: $success-25 !important; // stylelint-disable-line declaration-no-important
+  background: $success-25;
 }
 
 .greenEven {
-  background: $success-05 !important; // stylelint-disable-line declaration-no-important
+  background: $success-05;
 }
 
 .greenOdd {
-  background: $success-10 !important; // stylelint-disable-line declaration-no-important
+  background: $success-10;
 }
 
 .redHighlighted {
-  background: $error-25 !important; // stylelint-disable-line declaration-no-important
+  background: $error-25;
 }
 
 .redEven {
-  background: $error-05 !important; // stylelint-disable-line declaration-no-important
+  background: $error-05;
 }
 
 .redOdd {
-  background: $error-10 !important; // stylelint-disable-line declaration-no-important
+  background: $error-10;
 }
 
 .checkmark {
-  path {
-    fill: $success-100;
-    stroke: none;
-  }
+  color: $success-100;
 }
 
 .cross {
-  path {
-    fill: $error-100;
-    stroke: none;
-  }
+  color: $error-100;
 }
 
 .valueText {

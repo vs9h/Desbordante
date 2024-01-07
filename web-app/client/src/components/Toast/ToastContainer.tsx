@@ -4,12 +4,12 @@ import {
   ToastContainer as TostifyToastContainer,
   CloseButtonProps,
 } from 'react-toastify';
-import Cross from '@assets/icons/white-cross.svg?component';
+import Cross from '@assets/icons/cross.svg?component';
 import styles from './ToastContainer.module.scss';
 
 const CloseButton: FC<CloseButtonProps> = ({ closeToast, ariaLabel }) => (
   <button onClick={closeToast} aria-label={ariaLabel} className={styles.close}>
-    <Cross />
+    <Cross className={styles.cross} />
   </button>
 );
 

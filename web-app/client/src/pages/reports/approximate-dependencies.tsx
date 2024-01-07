@@ -1,3 +1,5 @@
+import React, { ReactElement, useCallback, useRef, useState } from 'react';
+import { FormProvider } from 'react-hook-form';
 import EyeIcon from '@assets/icons/eye.svg?component';
 import ArrowCrossed from '@assets/icons/line-arrow-right-crossed.svg?component';
 import Arrow from '@assets/icons/line-arrow-right.svg?component';
@@ -10,21 +12,25 @@ import Pagination from '@components/Pagination/Pagination';
 import ReportFiller from '@components/ReportFiller/ReportFiller';
 import ReportsLayout from '@components/ReportsLayout';
 
+import { ScrollDirection } from '@components/ScrollableNodeTable';
 import { AFDTable } from '@components/ScrollableNodeTable/implementations/AFD/AFDTable';
 import styles from '@styles/ApproximateDependencies.module.scss';
 
-import React, { ReactElement, useState } from 'react';
-import { FormProvider } from 'react-hook-form';
 import { PrimitiveType } from 'types/globalTypes';
 import { NextPageWithLayout } from 'types/pageWithLayout';
 import { data } from './AFDFakeData';
-import { Scrolling } from './onScroll';
 
 const ReportsAFD: NextPageWithLayout = () => {
-  const [clusterIndex, setClusterIndex] = useState(0);
+  const defaultLimit = 150;
+  const defaultOffsetDifference = 50;
+  const maxLimit = data.result.clustersTotalCount;
 
+  const [clusterIndex, setClusterIndex] = useState(0);
   const [isOrderingShown, setIsOrderingShown] = useState(false);
   const [isVisibilityShown, setIsVisibilityShown] = useState(false);
+  const shouldIgnoreScrollEvent = useRef(false);
+
+  const [limit, setLimit] = useState(defaultLimit);
 
   const { threshold, violatingRows, clustersTotalCount } = data.result;
   const { frequentness, mostFrequentValue, size, distinctRHSValues } =
@@ -32,7 +38,19 @@ const ReportsAFD: NextPageWithLayout = () => {
 
   const methods = useFilters(PrimitiveType.AFD);
 
-  const onScroll = Scrolling();
+  const onScroll = useCallback(
+    (direction: ScrollDirection) => {
+      if (!shouldIgnoreScrollEvent.current && direction === 'down') {
+        shouldIgnoreScrollEvent.current = true;
+        if (limit < maxLimit) {
+          setLimit((limit) => limit + defaultOffsetDifference);
+        } else {
+          shouldIgnoreScrollEvent.current = false;
+        }
+      }
+    },
+    [limit, defaultOffsetDifference, maxLimit],
+  );
 
   return (
     <>
@@ -64,10 +82,8 @@ const ReportsAFD: NextPageWithLayout = () => {
           )}
           {!clustersTotalCount && !data.result && (
             <ReportFiller
-              title={
-                'No clusters have been discovered (functional dependency may not hold)'
-              }
-              description={'Try restarting the task with different parameters'}
+              title="No clusters have been discovered (functional dependency may not hold)"
+              description="Try restarting the task with different parameters"
               icon={<ArrowCrossed />}
             />
           )}

@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { MainPrimitiveType } from 'types/globalTypes';
 import DescriptionAFD from './descriptionAFD';
+import DescriptionCFD from './descriptionCFD';
 
 export type PrimitiveInfoType = {
   label: string;
@@ -17,8 +18,7 @@ const primitiveInfo: Partial<Record<MainPrimitiveType, PrimitiveInfoType>> = {
   },
   [MainPrimitiveType.CFD]: {
     label: 'Conditional Functional Dependencies',
-    description:
-      'Conditional functional dependencies are relaxed form of functional dependencies and are mainly used for data cleaning and error detection problems. A single CFD is represented by two entities: (1) a binary relationship between disjoint sets of attributes and (2) conditions (also known as pattern tableau) which specify the subset of tuples on which a relationship holds. CFDs mining process is parameterized by confidence and support levels, which makes CFD in terms of resources consumption more complex concept than FD.',
+    description: <DescriptionCFD />,
     link: 'https://mstrutov.github.io/Desbordante/guides/cfd-mining.html',
   },
   [MainPrimitiveType.AR]: {

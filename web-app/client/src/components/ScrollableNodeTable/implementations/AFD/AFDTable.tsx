@@ -1,3 +1,4 @@
+import { FC, useMemo } from 'react';
 import Check from '@assets/icons/check.svg?component';
 import Cross from '@assets/icons/cross.svg?component';
 
@@ -6,7 +7,6 @@ import Table, {
   ScrollDirection,
   TableProps,
 } from '@components/ScrollableNodeTable';
-import { FC, useMemo } from 'react';
 
 import styles from './AFDTable.module.scss';
 
@@ -44,7 +44,7 @@ const getAFDRow: (row: AFDTableRow, position: number) => Row = (
       row.isFrequent ? (
         <Check className={styles.checkmark} height={20} width={20} />
       ) : (
-        <Cross height={20} width={20} />
+        <Cross className={styles.cross} height={20} width={20} />
       ),
       ...row.snippetRow,
     ],
