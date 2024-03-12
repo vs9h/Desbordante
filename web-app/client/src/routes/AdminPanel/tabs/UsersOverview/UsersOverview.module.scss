@@ -1,0 +1,27 @@
+@import "styles/common";
+
+.usersOverviewTab {
+    max-width: 988px;
+    width: 100%;
+
+    .title {
+        margin: 0 0 32px;
+    }
+
+    .settingsRow {
+        display: flex;
+        gap: 16px;
+        align-items: end;
+        margin: 0 0 24px;
+
+        .emailButton {
+            margin: 0 0 0 auto;
+        }
+    }
+
+    .itemsList {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+}

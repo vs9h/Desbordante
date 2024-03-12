@@ -21,8 +21,8 @@ export async function aggregationQuery<TColumns extends string>(config: {
 > {
     const { from, fromDefault, to, toDefault, granularity, columns } = config;
     const min =
-        from && isTimestampValid(from) ? `timextamptz '${from}'` : `(${fromDefault})`;
-    const max = to && isTimestampValid(to) ? `timextamptz '${to}'` : `(${toDefault})`;
+        from && isTimestampValid(from) ? `timestamptz '${from}'` : `(${fromDefault})`;
+    const max = to && isTimestampValid(to) ? `timestamptz '${to}'` : `(${toDefault})`;
     const interval = `interval '1 (${granularity})'`;
 
     const entryStart = "timestamp";

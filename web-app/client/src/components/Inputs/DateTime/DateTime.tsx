@@ -20,14 +20,14 @@ import styles from './DateTime.module.scss';
 import moment, { Moment } from 'moment';
 import CalendarIcon from '@assets/icons/calendar.svg?component';
 
-type Value = [Moment, Moment];
+type Value = [Moment | undefined, Moment | undefined];
 
 const formatValue = (value: Value) => {
-  return value.map((v) => moment(v).format('l LT')).join(' ~ ');
+  return value.map((v) => v ? moment(v).format('L LT') : 'undefined').join(' ~ ')
 };
 
 type Props = InputPropsBase &
-  Omit<HTMLProps<HTMLInputElement>, 'value' | 'onChange'> & {
+  Omit<HTMLProps<HTMLInputElement>, 'value' | 'onChange' | 'size'> & {
     value: Value;
     onChange: (newValue: Value) => void;
     tooltip?: ReactNode;
@@ -37,8 +37,9 @@ const DateTime: ForwardRefRenderFunction<HTMLInputElement, Props> = (
   { id, label, error, className, tooltip, value, onChange, ...props },
   ref,
 ) => {
+  const [inputText, setInputText] = useState('');
   const [selectedMode, setSelectedMode] = useState<'start' | 'end'>('start');
-  const [isDropdownShow, setIsDropdownShown] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const selectorRef = useRef<ReactDateTime>(null);
   const uniqueId = useId();
 
@@ -59,7 +60,22 @@ const DateTime: ForwardRefRenderFunction<HTMLInputElement, Props> = (
     onChange(newExternalValue);
   };
 
-  //   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {};
+  const handleInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const {value} = event.target;
+
+    setInputText(value);
+    
+    const newValue = value.split(' ~ ').map((timestamp) => timestamp === 'undefined' ? undefined : moment(timestamp));
+    const isValid = newValue.every((v) => v === undefined || v.isValid());
+
+    if (newValue.length === 2 && isValid) {
+      onChange(newValue as Value);
+    }
+  };
+
+  useEffect(() => {
+    setInputText(formatValue(value));
+  }, [value])
 
   return (
     <div
@@ -73,21 +89,25 @@ const DateTime: ForwardRefRenderFunction<HTMLInputElement, Props> = (
         {label && <label htmlFor={inputId}>{label}</label>}
         {tooltip && <Tooltip>{tooltip}</Tooltip>}
       </div>
-      <input
-        ref={ref}
-        id={inputId}
-        className={cn(error && styles.error)}
-        // onChange={handleInputChange}
-        onFocus={() => setIsDropdownShown(true)}
-        value={formatValue(value)}
-        {...props}
-      />
+      <div className={cn(styles.inputContainer, isFocused && styles.focused)}>
+        <input
+          ref={ref}
+          id={inputId}
+          className={cn(error && styles.error)}
+          onChange={handleInputChange}
+          onFocus={() => setIsFocused(true)}
+          value={inputText}
+          size={34}
+          {...props}
+        />
+        <CalendarIcon />
+      </div>
 
-      {isDropdownShow && (
+      {isFocused && (
         <div className={styles.dropdownContainer}>
           <OutsideClickObserver
             className={styles.dropdown}
-            onClickOutside={() => setIsDropdownShown(false)}
+            onClickOutside={() => setIsFocused(false)}
           >
             <div className={styles.modes}>
               <button

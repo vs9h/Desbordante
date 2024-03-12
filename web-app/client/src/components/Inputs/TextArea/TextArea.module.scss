@@ -1,0 +1,52 @@
+@import "styles/common";
+
+.inputTextArea {
+  .top {
+    display: flex;
+    align-items: center;
+    margin: 0 0 8px;
+
+    label {
+      @include paragraph;
+      display: block;
+      margin: 0 8px 0 0;
+      color: $black;
+      white-space: nowrap;
+    }
+  }
+
+  textarea {
+    @include paragraph;
+    width: 100%;
+    height: 180px;
+    resize: vertical;
+    padding: 16px;
+    color: $black;
+    border: 1px solid $black-25;
+    border-radius: 8px;
+    background: $white-25;
+
+    &:focus {
+      outline: none;
+      border: 1px solid $primary-0;
+    }
+
+    &::placeholder {
+      color: $black-50;
+    }
+
+    &.error {
+      border: 2px solid $error;
+    }
+  }
+
+  .errorMessage {
+    @include paragraph-small;
+    margin: 8px 0 0;
+    color: $error;
+  }
+
+  &.disabled {
+    opacity: 0.5;
+  }
+}

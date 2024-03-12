@@ -1,0 +1,40 @@
+@import "styles/common";
+
+.aggregationChart {
+  width: 100%;
+  height: 320px;
+  padding: 32px;
+  background: $white-25;
+  border: 1px solid $black-25;
+  border-radius: 8px;
+
+  * {
+    @include paragraph-small;
+  }
+
+  :global {
+    .recharts-default-tooltip {
+      .recharts-tooltip-label {
+        @include paragraph;
+      }
+
+      .recharts-tooltip-item-list > li {
+        padding: 2px 0;
+      }
+    }
+
+    .recharts-legend-wrapper {
+      .recharts-legend-item {
+        .recharts-legend-item-text {
+          @include paragraph;
+        }
+
+        .recharts-surface {
+          width: 16px;
+          height: 16px;
+          margin: 0 0 4px;
+        }
+      }
+    }
+  }
+}

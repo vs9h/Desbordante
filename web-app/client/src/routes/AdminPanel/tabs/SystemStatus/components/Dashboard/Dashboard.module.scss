@@ -6,4 +6,24 @@
   .title {
     margin: 0 0 32px;
   }
+
+  .optionsPanel {
+    position: relative;
+    display: flex;
+    gap: 16px;
+    margin: 0 0 24px;
+    z-index: 2;
+
+    .granularitySelect {
+      max-width: 224px;
+      width: 100%;
+    }
+  }
+
+  .charts {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    z-index: 1;
+  }
 }

@@ -15,26 +15,47 @@
     }
   }
 
-  input {
-    @include paragraph;
+  .inputContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
     width: 100%;
-    padding: 16px;
+    padding: 0 16px;
     color: $black;
     border: 1px solid $black-25;
     border-radius: 8px;
     background: $white-25;
 
-    &:focus {
+    &.error {
+      border: 2px solid $error;
+    }
+
+    &.focused {
       outline: none;
       border: 1px solid $primary-0;
     }
 
-    &::placeholder {
-      color: $black-50;
+
+    input {
+      @include paragraph;
+      flex-grow: 1;
+      min-width: 0;
+      padding: 16px 0;
+      border: none;
+      background: none;
+
+      &:focus {
+        outline: none;
+      }
+  
+      &::placeholder {
+        color: $black-50;
+      }
     }
 
-    &.error {
-      border: 2px solid $error;
+    svg {
+      color: $black-50;
     }
   }
 
@@ -95,6 +116,7 @@
       margin: 0;
       padding: 0;
       color: $black;
+      border: none;
     }
 
     .rdtDays {
@@ -178,7 +200,10 @@
 
               &.rdtToday {
                 font-weight: 700;
-                color: $black;
+                
+                &:not(.rdtActive) {
+                  color: $black;
+                }
 
                 &::before {
                   display: none;
@@ -189,6 +214,8 @@
         }
 
         tfoot {
+          border: none;
+
           tr {
             display: flex;
             justify-content: center;

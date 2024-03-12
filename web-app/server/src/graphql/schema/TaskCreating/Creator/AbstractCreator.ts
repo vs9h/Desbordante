@@ -157,6 +157,7 @@ export abstract class AbstractCreator<
         const status: TaskStatusType = "ADDING_TO_DB";
         const userID = this.userID;
         const { fileID } = this.fileInfo;
+        console.log({ userID });
         const taskState = await this.context.models.TaskState.create({
             status,
             userID,

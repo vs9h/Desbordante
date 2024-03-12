@@ -48,6 +48,7 @@ const typeDefs = gql`
 
     type User {
         userID: String!
+        createdAt: String!
         feedbacks(pagination: Pagination! = { offset: 0, limit: 10 }): [Feedback!]
         roles: [Role!]
         permissions: [PermissionType!]
@@ -198,6 +199,7 @@ const typeDefs = gql`
         maxPhase: Int
         isExecuted: Boolean!
         elapsedTime: Float
+        createdAt: String!
     }
 
     union TaskStateAnswer = TaskState | ResourceLimitTaskError | InternalServerTaskError
@@ -797,11 +799,13 @@ const typeDefs = gql`
         fileID: String!
         createdAt: String!
         userID: ID
+        user: User
         isBuiltIn: Boolean!
         "The name of the file under which it is stored on the server"
         fileName: String!
         "The original name of the file submitted by the user"
         originalFileName: String!
+        fileSize: Int!
         mimeType: String
         encoding: String
         hasHeader: Boolean!

@@ -148,20 +148,23 @@ export const UserResolvers: Resolvers = {
                         fullName: getQueryFromSearchFilter(value),
                     }),
                     country: (value) => ({ isBuiltIn: getQueryFromSearchFilter(value) }),
-                    includeDeleted: (value) => ({ paranoid: value }),
                     registrationTime: (value) => ({
                         createdAt: getQueryFromRangeFilter(value),
                     }),
                 },
                 {
-                    FULL_NAME: "fullName",
+                    FULL_NAME: "\"fullName\"",
                     COUNTRY: "country",
-                    CREATION_TIME: "createdAt",
-                    STATUS: "accountStatus",
-                }
+                    CREATION_TIME: "\"createdAt\"",
+                    STATUS: "\"accountStatus\"",
+                },
+                ["includeDeleted"]
             );
 
-            return await models.User.findAll(options);
+            return await models.User.findAll({
+                ...options,
+                paranoid: props.filters?.includeDeleted ?? false,
+            });
         },
         sessions: async (parent, { pagination, onlyValid }, { models, sessionInfo }) => {
             if (!sessionInfo || !sessionInfo.permissions.includes("VIEW_ADMIN_INFO")) {

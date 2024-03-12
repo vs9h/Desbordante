@@ -19,35 +19,35 @@ const ModalContainer: FCWithChildren<ModalProps> = ({
   onClose = () => null,
 }) => {
   const backgroundFadeProps = useSpring({
-    from: {
-      opacity: 0,
-    },
-    to: {
-      opacity: 1,
-    },
-    config: {
-      tension: 300,
-    },
+    // from: {
+    //   opacity: 0,
+    // },
+    // to: {
+    //   opacity: 1,
+    // },
+    // config: {
+    //   tension: 300,
+    // },
   });
 
   const containerProps = useSpring({
-    from: {
-      opacity: 0,
-      transform: 'translate3d(0, 3%, 0)',
-    },
-    to: [
-      {
-        opacity: 1,
-        transform: 'translate3d(0, 0, 0)',
-      },
-      {
-        transform: 'none',
-        immediate: true,
-      },
-    ],
-    config: {
-      tension: 300,
-    },
+    // from: {
+    //   opacity: 0,
+    //   transform: 'translate3d(0, 3%, 0)',
+    // },
+    // to: [
+    //   {
+    //     opacity: 1,
+    //     transform: 'translate3d(0, 0, 0)',
+    //   },
+    //   {
+    //     transform: 'none',
+    //     immediate: true,
+    //   },
+    // ],
+    // config: {
+    //   tension: 300,
+    // },
   });
 
   useEffect(() => {

@@ -1,4 +1,10 @@
-import { FindOptions, Op, WhereAttributeHashValue, WhereOptions } from "sequelize";
+import {
+    FindOptions,
+    Op,
+    WhereAttributeHashValue,
+    WhereOptions,
+    literal,
+} from "sequelize";
 import { OrderDirection, Pagination } from "../types/types";
 
 type AbstractQueryProps<FilterName extends string, OrderingParameter extends string> = {
@@ -20,7 +26,8 @@ export const getFindOptionsFromProps = <
 >(
     { filters, ordering, pagination }: TProps,
     mapFilterPropsToOptions: Record<TFilterName, (value: any) => WhereOptions>,
-    mapOrderingParameterToAttibute: Record<TOrderingParameterName, string>
+    mapOrderingParameterToAttibute: Record<TOrderingParameterName, string>,
+    exclude?: string[]
 ) => {
     let options: FindOptions = {};
 
@@ -31,6 +38,10 @@ export const getFindOptionsFromProps = <
     if (filters) {
         const where = Object.entries(filters).reduce<WhereOptions>(
             (acc, [filterName, filterValue]) => {
+                if (exclude?.includes(filterName as TFilterName)) {
+                    return acc;
+                }
+
                 const mapping =
                     mapFilterPropsToOptions[filterName as TFilterName] ?? filterName;
 
@@ -54,8 +65,11 @@ export const getFindOptionsFromProps = <
 
     if (ordering) {
         const order = [
-            [mapOrderingParameterToAttibute[ordering.parameter], ordering.direction],
-        ] as [string, OrderDirection][];
+            [
+                literal(mapOrderingParameterToAttibute[ordering.parameter]),
+                ordering.direction,
+            ],
+        ] as any;
 
         options = { ...options, order };
     }

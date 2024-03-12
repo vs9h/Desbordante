@@ -6,6 +6,7 @@ import {
 import { AuthenticationError } from "apollo-server-express";
 import { ForbiddenError } from "apollo-server-core";
 import { Resolvers } from "../../types/types";
+import { User } from "../../../db/models/UserData/User";
 
 export const MetaInfoResolvers: Resolvers = {
     Query: {
@@ -25,7 +26,6 @@ export const MetaInfoResolvers: Resolvers = {
                         originalFileName: getQueryFromSearchFilter(value),
                     }),
                     includeBuiltIn: (value) => ({ isBuiltIn: value }),
-                    includeDeleted: (value) => ({ paranoid: value }),
                     period: (value) => ({
                         createdAt: getQueryFromRangeFilter(value),
                     }),
@@ -34,14 +34,20 @@ export const MetaInfoResolvers: Resolvers = {
                     }),
                 },
                 {
-                    FILE_NAME: "originalFileName",
-                    FILE_SIZE: "fileSize",
-                    CREATION_TIME: "createdAt",
-                    USER: "userID",
-                }
+                    FILE_NAME: "\"originalFileName\"",
+                    FILE_SIZE: "\"fileSize\"",
+                    CREATION_TIME: "\"createdAt\"",
+                    USER: "\"userID\"",
+                },
+                ["includeDeleted"]
             );
 
-            return await models.FileInfo.findAll(options);
+            return await models.FileInfo.findAll({
+                ...options,
+                include: User,
+                paranoid: props.filters?.includeDeleted ?? false,
+                logging: console.log,
+            });
         },
     },
 };

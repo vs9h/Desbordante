@@ -1,6 +1,6 @@
 import { ApolloError, ForbiddenError, UserInputError } from "apollo-server-core";
 import { CsvParserStream, parse } from "fast-csv";
-import { FindOptions, Op, col, fn } from "sequelize";
+import { FindOptions, Op, col, fn, literal } from "sequelize";
 import {
     GeneralTaskConfig,
     MainPrimitiveType,
@@ -21,6 +21,7 @@ import { AuthenticationError } from "apollo-server-express";
 import { CompactData } from "./DependencyFilters/CompactData";
 import { FDFilter } from "./DependencyFilters/FDFilter";
 import { FileInfo } from "../../../db/models/FileData/FileInfo";
+import { TaskState } from "../../../db/models/TaskData/TaskState";
 import { MFDFilter } from "./DependencyFilters/MFDFilter";
 import { Row } from "@fast-csv/parse";
 import { TaskCreatorFactory } from "../TaskCreating/Creator/AbstractCreator";
@@ -670,7 +671,7 @@ export const TaskInfoResolvers: Resolvers = {
                     prefix: MainPrimitiveType;
                 }) || null;
             const state = await models.TaskState.findByPk(taskID, {
-                attributes: ["userID", "isPrivate"],
+                attributes: ["userID", "isPrivate", "createdAt"],
             });
             if (!taskConfig || !state) {
                 throw new UserInputError("Invalid taskID was provided", {
@@ -701,29 +702,28 @@ export const TaskInfoResolvers: Resolvers = {
             const options = getFindOptionsFromProps(
                 props,
                 {
-                    searchString: (value) => ({
-                        taskId: getQueryFromSearchFilter(value),
-                    }),
-                    includeDeleted: (value) => ({ paranoid: value }),
                     period: (value) => ({
                         createdAt: getQueryFromRangeFilter(value),
                     }),
                     elapsedTime: (value) => ({
-                        elapsedTime: getQueryFromRangeFilter(value),
+                        "$taskState.elapsedTime$": getQueryFromRangeFilter(value),
                     }),
                 },
                 {
-                    ELAPSED_TIME: "elapsedTime",
+                    ELAPSED_TIME: "\"taskState\".\"elapsedTime\"",
                     STATUS: "status",
-                    CREATION_TIME: "createdAt",
-                    USER: "userID",
-                }
+                    CREATION_TIME: "\"GeneralTaskConfig\".\"createdAt\"",
+                    USER: "\"userID\"",
+                },
+                ["includeDeleted", "searchString"]
             );
 
             const configs = await models.GeneralTaskConfig.findAll({
                 ...options,
                 attributes: ["taskID", "fileID", ["type", "prefix"]],
                 raw: true,
+                include: TaskState,
+                paranoid: props.filters?.includeDeleted ?? false,
             });
 
             return (

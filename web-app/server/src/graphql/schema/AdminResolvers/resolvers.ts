@@ -57,7 +57,7 @@ export const AdminResolvers: Resolvers = {
                 columns: (start, end) => ({
                     totalFiles: `SELECT COUNT(*) FROM "${fileInfoTable}" WHERE "createdAt" <= ${end}`,
                     newFiles: `SELECT COUNT(*) FROM "${fileInfoTable}" WHERE "createdAt" BETWEEN ${start} AND ${end}`,
-                    totalSpaceOccupied: `SELECT SUM("fileSize") FROM "${fileInfoTable}" WHERE "createdAt" <= ${end}`,
+                    totalSpaceOccupied: `SELECT COALESCE(SUM("fileSize"), 0) FROM "${fileInfoTable}" WHERE "createdAt" <= ${end}`,
                 }),
             });
         },
@@ -118,6 +118,8 @@ export const AdminResolvers: Resolvers = {
                     rejected,
                 };
             } catch (error) {
+                console.log(error);
+
                 return {
                     status: "ERROR",
                 };

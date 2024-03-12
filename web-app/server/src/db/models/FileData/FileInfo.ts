@@ -81,6 +81,9 @@ export class FileInfo extends Model implements FileInfoModelMethods {
     @Column({ type: STRING, allowNull: true })
     mimeType!: string | null;
 
+    @Column({ type: INTEGER, allowNull: true })
+    fileSize!: number;
+
     @Column({ type: STRING })
     encoding!: string | null;
 
@@ -183,6 +186,10 @@ export class FileInfo extends Model implements FileInfoModelMethods {
         }
         const counters = await findRowsAndColumnsNumber(dbPath, isBuiltIn, delimiter);
         await file.update(counters);
+        const { size: fileSize } = await fs.promises.stat(path);
+        await file.update({
+            fileSize,
+        });
 
         if (withFileFormat) {
             await FileFormat.createFileFormatIfPropsValid(file, datasetProps);
@@ -217,14 +224,17 @@ export class FileInfo extends Model implements FileInfoModelMethods {
         const fileName = `${fileID}.csv`;
         const path = FileInfo.getPathToUploadedDataset(fileName);
         await file.update({ fileName, path });
-
-        const out = fs.createWriteStream(
-            `${(!config.inContainer && "../../volumes/") || ""}uploads/${fileName}`
-        );
+        const newFilePath = `${
+            (!config.inContainer && "../../volumes/") || ""
+        }uploads/${fileName}`;
+        const out = fs.createWriteStream(newFilePath);
         stream.pipe(out);
         await finished(out);
+
+        const { size: fileSize } = await fs.promises.stat(newFilePath);
         await file.update({
             renamedHeader: JSON.stringify(await file.generateHeader()),
+            fileSize,
         });
 
         if (datasetProps.inputFormat) {
