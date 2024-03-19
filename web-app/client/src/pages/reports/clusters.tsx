@@ -1,6 +1,4 @@
-import Image from 'next/image';
-import { FC, ReactElement, useState } from 'react';
-import longArrowIcon from '@assets/icons/long-arrow.svg';
+import { Icon } from '@components/IconComponent';
 import Pagination from '@components/Pagination/Pagination';
 import { ReportsLayout } from '@components/ReportsLayout/ReportsLayout';
 import ClusterTable from '@components/ScrollableTable/ClusterTable';
@@ -9,6 +7,7 @@ import Tooltip from '@components/Tooltip';
 import { getClustersPreview } from '@graphql/operations/queries/EDP/__generated__/getClustersPreview';
 import useClustersPreview from '@hooks/useClustersPreview';
 import styles from '@styles/Clusters.module.scss';
+import { FC, ReactElement, useState } from 'react';
 import { NextPageWithLayout } from 'types/pageWithLayout';
 
 const getCluster = (response?: getClustersPreview) => {
@@ -93,7 +92,7 @@ const Loader: FC<LoaderProps> = ({ lhs, rhs }) => {
               {attr}
             </span>
           ))}
-          <Image src={longArrowIcon} width={66} height={15} />
+          <Icon name="longArrow" />
           <span className={styles.attr}>{rhs}</span>
         </div>
       </div>

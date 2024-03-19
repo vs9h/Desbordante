@@ -1,12 +1,12 @@
-import { useRouter } from 'next/router';
-import FileIcon from '@assets/icons/file.svg?component';
 import Button from '@components/Button';
+import { Icon } from '@components/IconComponent';
 import PrimitiveCard from '@components/PrimitiveCard';
 import PrimitiveDescription from '@components/PrimitiveDescription';
 import WizardLayout from '@components/WizardLayout';
 import primitiveInfo from '@constants/primitiveInfoType';
 import { useTaskUrlParams } from '@hooks/useTaskUrlParams';
 import styles from '@styles/ChoosePrimitive.module.scss';
+import { useRouter } from 'next/router';
 import { MainPrimitiveType } from 'types/globalTypes';
 
 const header = (
@@ -21,7 +21,7 @@ const header = (
           window.open(
             'https://github.com/Mstrutov/Desbordante/issues/new',
             '_blank',
-            'noreferrer'
+            'noreferrer',
           )
         }
       >
@@ -38,7 +38,7 @@ const ChoosePrimitive = () => {
   const footer = (
     <Button
       variant="primary"
-      icon={<FileIcon />}
+      icon={<Icon name="file" />}
       disabled={!primitive.value}
       onClick={() =>
         router.push({

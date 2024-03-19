@@ -33,15 +33,15 @@
 }
 
 .info {
-  @include template($info);
+  color: $info;
 }
 
 .error {
-  @include template($error);
+  color: $error;
 }
 
 .success {
-  @include template($success);
+  color: $success;
 }
 
 .warning {

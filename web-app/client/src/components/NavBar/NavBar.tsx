@@ -1,9 +1,8 @@
+import { Icon } from '@components/IconComponent';
 import cn from 'classnames';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, useRef } from 'react';
-import logo from '@public/logo.svg';
 import styles from './NavBar.module.scss';
 
 type Route = {
@@ -33,7 +32,7 @@ const NavBar: FC = () => {
   const router = useRouter();
 
   const selectedRouteIndex = routes.findIndex(({ path }) =>
-    router.pathname.includes(path)
+    router.pathname.includes(path),
   );
 
   return (
@@ -41,13 +40,7 @@ const NavBar: FC = () => {
       <ul className={styles.itemsContainer}>
         <li>
           <Link href="/" className={styles.brand}>
-            <Image
-              src={logo}
-              alt="Logo"
-              className={styles.logo}
-              width={39.5}
-              height={40}
-            />
+            <Icon name="logo" size={40} className={styles.logo} />
             Desbordante
           </Link>
         </li>
@@ -57,7 +50,7 @@ const NavBar: FC = () => {
             key={path}
             className={cn(
               styles.underline,
-              index === selectedRouteIndex && styles.selected
+              index === selectedRouteIndex && styles.selected,
             )}
             ref={(node) => {
               widths.current[index] = node?.offsetWidth ?? 0;

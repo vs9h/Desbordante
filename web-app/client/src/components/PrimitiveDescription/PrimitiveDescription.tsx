@@ -1,7 +1,8 @@
+import { Icon } from '@components/IconComponent';
+import colors from '@constants/colors';
+import { PrimitiveInfoType } from '@constants/primitiveInfoType';
 import cn from 'classnames';
 import { FC } from 'react';
-import InfoIcon from '@assets/icons/info.svg?component';
-import { PrimitiveInfoType } from '@constants/primitiveInfoType';
 import styles from './PrimitiveDescription.module.scss';
 
 interface Props {
@@ -11,7 +12,8 @@ interface Props {
 
 const PrimitiveDescription: FC<Props> = ({ className, info }) => (
   <small className={cn(className, styles.description)}>
-    <InfoIcon width={16} height={16} /> {info.description}{' '}
+    <Icon name="info" size={16} color={colors.primary[100]} />{' '}
+    {info.description}{' '}
     {info.link && (
       <a href={info.link} target="_blank" rel="noreferrer">
         Learn more...

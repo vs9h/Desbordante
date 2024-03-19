@@ -1,15 +1,15 @@
+import { Icon } from '@components/IconComponent';
 import { FC } from 'react';
 import {
   ToastContainerProps,
   ToastContainer as TostifyToastContainer,
   CloseButtonProps,
 } from 'react-toastify';
-import Cross from '@assets/icons/white-cross.svg?component';
 import styles from './ToastContainer.module.scss';
 
 const CloseButton: FC<CloseButtonProps> = ({ closeToast, ariaLabel }) => (
   <button onClick={closeToast} aria-label={ariaLabel} className={styles.close}>
-    <Cross />
+    <Icon name="cross" />
   </button>
 );
 

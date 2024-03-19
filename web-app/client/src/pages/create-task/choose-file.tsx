@@ -1,12 +1,8 @@
-import cn from 'classnames';
-import type { GetServerSideProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { useEffect, useMemo } from 'react';
-import SettingsIcon from '@assets/icons/settings.svg?component';
 import Button from '@components/Button';
 import { Collapse } from '@components/Collapse';
 import { DatasetCard } from '@components/DatasetCard';
 import { DatasetUploader } from '@components/DatasetUploader';
+import { Icon } from '@components/IconComponent';
 import WizardLayout from '@components/WizardLayout';
 import client from '@graphql/client';
 import { getAlgorithmsConfig } from '@graphql/operations/queries/__generated__/getAlgorithmsConfig';
@@ -14,19 +10,23 @@ import { GET_ALGORITHMS_CONFIG } from '@graphql/operations/queries/getAlgorithms
 import { useAuthContext } from '@hooks/useAuthContext';
 import { useTaskUrlParams } from '@hooks/useTaskUrlParams';
 import styles from '@styles/ChooseFile.module.scss';
+import cn from 'classnames';
+import type { GetServerSideProps, NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo } from 'react';
 import { AllowedDataset } from 'types/algorithms';
 import { MainPrimitiveType } from 'types/globalTypes';
 
 const sortDatasetsBySupportedPrimitive = (
   datasets?: AllowedDataset[],
-  primitive?: MainPrimitiveType
+  primitive?: MainPrimitiveType,
 ) =>
   datasets &&
   primitive &&
   datasets.sort(
     (a, b) =>
       Number(b.supportedPrimitives.includes(primitive)) -
-      Number(a.supportedPrimitives.includes(primitive))
+      Number(a.supportedPrimitives.includes(primitive)),
   );
 
 type Props = {
@@ -40,15 +40,18 @@ const ChooseFile: NextPage<Props> = ({ defaultAlgorithmConfig }) => {
 
   const userDatasets = useMemo(
     () => sortDatasetsBySupportedPrimitive(user?.datasets, primitive.value),
-    [primitive.value, user?.datasets]
+    [primitive.value, user?.datasets],
   );
   const builtinDatasets = useMemo(
     () =>
       sortDatasetsBySupportedPrimitive(
         defaultAlgorithmConfig?.algorithmsConfig?.allowedDatasets,
-        primitive.value
+        primitive.value,
       ),
-    [defaultAlgorithmConfig?.algorithmsConfig?.allowedDatasets, primitive.value]
+    [
+      defaultAlgorithmConfig?.algorithmsConfig?.allowedDatasets,
+      primitive.value,
+    ],
   );
   const selectedDataset = useMemo(
     () =>
@@ -58,9 +61,9 @@ const ChooseFile: NextPage<Props> = ({ defaultAlgorithmConfig }) => {
           (dataset) =>
             primitive.value &&
             dataset.supportedPrimitives.includes(primitive.value) &&
-            dataset.fileID === fileID.value
+            dataset.fileID === fileID.value,
         ),
-    [builtinDatasets, fileID.value, primitive.value, userDatasets]
+    [builtinDatasets, fileID.value, primitive.value, userDatasets],
   );
 
   useEffect(() => {
@@ -137,7 +140,7 @@ const ChooseFile: NextPage<Props> = ({ defaultAlgorithmConfig }) => {
       <Button
         disabled={!selectedDataset}
         variant="primary"
-        icon={<SettingsIcon />}
+        icon={<Icon name="settings" />}
         onClick={() =>
           router.push({
             pathname: '/create-task/configure-algorithm',
@@ -156,7 +159,7 @@ const ChooseFile: NextPage<Props> = ({ defaultAlgorithmConfig }) => {
       footer={footer}
       className={cn(
         styles.content,
-        !user?.permissions.canUploadFiles && styles.reversed
+        !user?.permissions.canUploadFiles && styles.reversed,
       )}
     >
       {userFiles}

@@ -1,10 +1,10 @@
-import { GetServerSideProps, NextPage } from 'next';
-import HomeBackground from '@assets/backgrounds/home.svg?component';
+import { Icon } from '@components/IconComponent';
 import TeamMemberBadge from '@components/TeamMemberBadge';
 import cmsClient from '@graphql/cmsClient';
 import { getTeamMembers } from '@graphql/operations/queries/__generated__/getTeamMembers';
 import { GET_TEAM_MEMBERS } from '@graphql/operations/queries/getTeamMembers';
 import styles from '@styles/Team.module.scss';
+import { GetServerSideProps, NextPage } from 'next';
 
 interface Props {
   team: getTeamMembers;
@@ -15,18 +15,13 @@ const Team: NextPage<Props> = ({ team }) => {
 
   return (
     <div className={styles.teamPage}>
-      <HomeBackground
-        className={styles.background}
-        width="100%"
-        height="100%"
-        preserveAspectRatio="xMidYMid slice"
-      />
+      <Icon name="backgroundHome" className={styles.background} />
 
       {teamMembers && teamMembers.data && teamMembers.data.length > 0 && (
         <ol className={styles.teamCardsContainer}>
           {teamMembers.data.map(
             ({ id, attributes }) =>
-              attributes && <TeamMemberBadge data={attributes} key={id} />
+              attributes && <TeamMemberBadge data={attributes} key={id} />,
           )}
         </ol>
       )}

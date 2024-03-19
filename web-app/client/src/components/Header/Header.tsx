@@ -1,10 +1,10 @@
-import classNames from 'classnames';
-import { useEffect, useState } from 'react';
-import ListIcon from '@assets/icons/list.svg?component';
 import Button from '@components/Button';
+import { Icon } from '@components/IconComponent';
 import NavBar from '@components/NavBar';
 import { useAuthContext } from '@hooks/useAuthContext';
 import useModal from '@hooks/useModal';
+import classNames from 'classnames';
+import { useEffect, useState } from 'react';
 import styles from './Header.module.scss';
 
 const Header = () => {
@@ -16,7 +16,7 @@ const Header = () => {
 
   useEffect(() => {
     const checkScroll = () => {
-      setHeaderBackground(window.pageYOffset > 100);
+      setHeaderBackground(window.scrollY > 64);
     };
 
     window.addEventListener('scroll', checkScroll);
@@ -29,7 +29,7 @@ const Header = () => {
     <header
       className={classNames(
         styles.header,
-        headerBackground && styles.background
+        headerBackground && styles.background,
       )}
     >
       <NavBar />
@@ -37,7 +37,7 @@ const Header = () => {
         variant="secondary"
         size="sm"
         aria-label="open menu"
-        icon={<ListIcon />}
+        icon={<Icon name="list" />}
         className={styles.menu}
       />
       <div className={styles.auth}>

@@ -1,3 +1,6 @@
+import { Icon } from '@components/IconComponent';
+import { InputPropsBase } from '@components/Inputs';
+import badgeStyles from '@components/Inputs/MultiSelect/OptionBadge/OptionBadge.module.scss';
 import cn from 'classnames';
 import { ComponentType } from 'react';
 import {
@@ -15,16 +18,12 @@ import {
   OptionProps,
   NoticeProps,
 } from 'react-select';
-import ChevronDownIcon from '@assets/icons/arrow-down.svg?component';
-import EmptyButton from '@assets/icons/close.svg?component';
-import { InputPropsBase } from '@components/Inputs';
-import badgeStyles from '@components/Inputs/MultiSelect/OptionBadge/OptionBadge.module.scss';
 import { OptionWithBadges } from 'types/multiSelect';
 import { OptionBadge } from './OptionBadge';
 import styles from './MultiSelect.module.scss';
 
 export const colorStyles: StylesConfig = {
-  control: (styles) => ({}),
+  control: (style) => ({}),
   valueContainer: (styles) => ({ ...styles, padding: 0 }),
   indicatorSeparator: (styles) => ({ ...styles, margin: 0 }),
 };
@@ -36,7 +35,7 @@ const Control: ComponentType<ControlProps & InputPropsBase> = (props) => (
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       props.selectProps.error && styles.error,
-      props.isFocused && styles.focused
+      props.isFocused && styles.focused,
     )}
     {...props}
   />
@@ -69,12 +68,12 @@ const MultiValueRemove: ComponentType<
     {...props.innerProps}
     className={cn(styles.multiValueRemove, props.error && styles.error)}
   >
-    <EmptyButton />
+    <Icon name="cross" />
   </div>
 );
 
 const Placeholder: ComponentType<PlaceholderProps & InputPropsBase> = (
-  props
+  props,
 ) => <components.Placeholder className={styles.placeholder} {...props} />;
 
 const Input: ComponentType<InputProps & InputPropsBase> = (props) => (
@@ -88,7 +87,7 @@ const ClearIndicator: ComponentType<ClearIndicatorProps & InputPropsBase> = ({
   innerProps,
 }) => (
   <div className={styles.clearIndicator} {...innerProps}>
-    <EmptyButton />
+    <Icon name="cross" />
   </div>
 );
 
@@ -96,7 +95,7 @@ const DropdownIndicator: ComponentType<
   DropdownIndicatorProps & InputPropsBase
 > = ({ innerProps }) => (
   <div className={styles.dropdownIndicator} {...innerProps}>
-    <ChevronDownIcon />
+    <Icon name="angle" />
   </div>
 );
 
@@ -125,7 +124,7 @@ export const Option: ComponentType<OptionProps & InputPropsBase> = ({
         styles.option,
         optionData.badges?.length == 1 && styles.once,
         isFocused && styles.focused,
-        isSelected && styles.selected
+        isSelected && styles.selected,
       )}
       {...innerProps}
       ref={innerRef}

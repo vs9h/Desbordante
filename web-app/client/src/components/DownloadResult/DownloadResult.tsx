@@ -1,13 +1,13 @@
 import { useMutation } from '@apollo/client';
-import { FC } from 'react';
-import DownloadIcon from '@assets/icons/download.svg?component';
 import Button from '@components/Button';
+import { Icon } from '@components/IconComponent';
 import { useTaskContext } from '@components/TaskContext';
 import {
   downloadResults,
   downloadResultsVariables,
 } from '@graphql/operations/mutations/__generated__/downloadResults';
 import { DOWNLOAD_RESULTS } from '@graphql/operations/mutations/downloadResults';
+import { FC } from 'react';
 import { FileExtension, IntersectionFilter } from 'types/globalTypes';
 
 interface Props {
@@ -43,7 +43,7 @@ const DownloadResult: FC<Props> = ({ filter, disabled }) => {
 
   return (
     <Button
-      icon={<DownloadIcon />}
+      icon={<Icon name="download" />}
       onClick={() => downloadResults()}
       disabled={loading || disabled}
     >

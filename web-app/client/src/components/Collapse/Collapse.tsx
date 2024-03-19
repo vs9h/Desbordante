@@ -1,6 +1,6 @@
+import { Icon } from '@components/IconComponent';
 import cn from 'classnames';
 import { useState } from 'react';
-import ArrowDown from '@assets/icons/arrow-down.svg?component';
 import { FCWithChildren } from 'types/react';
 import styles from './Collapse.module.scss';
 
@@ -23,11 +23,7 @@ export const Collapse: FCWithChildren<Props> = ({
         onClick={() => setIsShown((isShown) => !isShown)}
       >
         {title}{' '}
-        <ArrowDown
-          height={20}
-          width={20}
-          className={cn(isShown && styles.reversed)}
-        />
+        <Icon name="angle" size={20} orientation={isShown ? 'up' : 'down'} />
       </h5>
       {isShown && <div>{children}</div>}
     </div>

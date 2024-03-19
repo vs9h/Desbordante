@@ -1,7 +1,6 @@
+import { Icon } from '@components/IconComponent';
 import cn from 'classnames';
-import Image from 'next/image';
 import { FC, HTMLProps } from 'react';
-import externalLinkIcon from '@assets/icons/external-link.svg';
 import styles from './ExternalLink.module.scss';
 
 const ExternalLink: FC<HTMLProps<HTMLAnchorElement>> = ({
@@ -17,7 +16,7 @@ const ExternalLink: FC<HTMLProps<HTMLAnchorElement>> = ({
     >
       {children}
       <div className={styles.imageWrapper}>
-        <Image src={externalLinkIcon} alt="link" width={16} height={16} />
+        <Icon name="externalLink" size={16} />
       </div>
     </a>
   );

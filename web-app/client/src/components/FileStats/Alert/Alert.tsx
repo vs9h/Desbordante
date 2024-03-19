@@ -1,8 +1,7 @@
+import { Icon } from '@components/IconComponent';
+import colors from '@constants/colors';
 import classNames from 'classnames';
 import { FC, HTMLProps, ReactNode } from 'react';
-import ErrorIcon from '@assets/icons/error-red.svg?component';
-import InfoIcon from '@assets/icons/info-blue.svg?component';
-import SuccessIcon from '@assets/icons/success-green.svg?component';
 import styles from './Alert.module.scss';
 
 type AlertVariant = 'info' | 'error' | 'success' | 'warning';
@@ -13,10 +12,10 @@ type AlertProps = {
 } & HTMLProps<HTMLDivElement>;
 
 const alertIcons: Record<AlertVariant, ReactNode> = {
-  info: <InfoIcon />,
-  error: <ErrorIcon />,
-  success: <SuccessIcon />,
-  warning: <ErrorIcon />,
+  info: <Icon name="info" size={48} color={colors.info[100]} />,
+  error: <Icon name="error" size={48} color={colors.error[100]} />,
+  success: <Icon name="checkFill" size={48} color={colors.success[100]} />,
+  warning: <Icon name="error" size={48} color={colors.error[100]} />,
 };
 
 export const Alert: FC<AlertProps> = ({

@@ -1,16 +1,13 @@
-import { FC, useMemo } from 'react';
-import AngleArrow from '@assets/icons/angle-arrow.svg?component';
-import Check from '@assets/icons/check.svg?component';
-import Cross from '@assets/icons/cross.svg?component';
-
 import { MFDHighlight } from '@atoms/MFDTaskAtom';
 
+import { Icon } from '@components/IconComponent';
 import Table, {
   Row,
   ScrollDirection,
   TableProps,
 } from '@components/ScrollableNodeTable';
-
+import colors from '@constants/colors';
+import { FC, useMemo } from 'react';
 import styles from './MFDTable.module.scss';
 
 type MFDTableProps = {
@@ -31,7 +28,7 @@ type MFDTableProps = {
 const getRowColor: (
   withinLimit: boolean,
   index: number,
-  isHighlighted: boolean
+  isHighlighted: boolean,
 ) => string = (withinLimit, index, isHighlighted) => {
   if (withinLimit) {
     if (isHighlighted) {
@@ -53,30 +50,30 @@ const getMFDRow: (
   position: number,
   isHighlighted: boolean,
   isFullValueShown: boolean,
-  callbackFunction: () => void
+  callbackFunction: () => void,
 ) => Row = (
   highlight,
   position,
   isHighlighted,
   isFullValueShown,
-  callbackFunction
+  callbackFunction,
 ) => {
   return {
     items: [
-      highlight.withinLimit ? ( // icon
-        <Check className={styles.checkmark} height={20} width={20} />
+      highlight.withinLimit ? (
+        <Icon name="check" size={20} color={colors.success[100]} />
       ) : (
-        <Cross height={20} width={20} />
+        <Icon name="cross" size={20} color={colors.error[100]} />
       ),
-      highlight.maximumDistance, // maximum distance
-      highlight.index, // index
+      highlight.maximumDistance,
+      highlight.index,
       <div // furthest point index or close icon
         key={`furthestIndex-${highlight.rowIndex}`}
         onClick={callbackFunction}
         className={styles.clickableIndex}
       >
         {isHighlighted ? (
-          <AngleArrow height={14} width={14} />
+          <Icon name="angleArrow" className={styles.angleArrow} />
         ) : (
           highlight.furthestPointIndex
         )}
@@ -108,14 +105,14 @@ export const MFDTable: FC<MFDTableProps> = ({
   const data: Row[] = useMemo(() => {
     const insertRowData: Row | undefined = insertedRow
       ? getMFDRow(insertedRow.data, totalCount, true, isFullValueShown, () =>
-          closeInsertedRow()
+          closeInsertedRow(),
         )
       : undefined;
 
     const highlightData = highlights.map((highlight) =>
       getMFDRow(highlight, highlight.rowIndex, false, isFullValueShown, () =>
-        insertRow(highlight.furthestPointIndex, highlight.index)
-      )
+        insertRow(highlight.furthestPointIndex, highlight.index),
+      ),
     );
 
     if (insertRowData) {

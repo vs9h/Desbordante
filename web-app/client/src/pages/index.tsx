@@ -1,8 +1,8 @@
+import UnidataLogo from '@assets/images/unidata-logo.svg?component';
+import { Icon } from '@components/IconComponent';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import HomeBackground from '@assets/backgrounds/home.svg?component';
-import UnidataLogo from '@assets/images/unidata-logo.svg?component';
 import Button from '../components/Button';
 import ExternalLink from '../components/ExternalLink';
 import styles from '../styles/Home.module.scss';
@@ -22,12 +22,7 @@ const Home: NextPage = () => {
 
   return (
     <div className={styles.root}>
-      <HomeBackground
-        className={styles.background}
-        width="100%"
-        height="100%"
-        preserveAspectRatio="xMidYMid slice"
-      />
+      <Icon name="backgroundHome" className={styles.background} />
 
       <div className={styles.hero}>
         <div className={styles.content}>

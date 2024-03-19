@@ -1,7 +1,7 @@
+import { Icon } from '@components/IconComponent';
 import cn from 'classnames';
 import { useEffect, useRef } from 'react';
 import { animated, useSpring } from 'react-spring';
-import CloseIcon from '@assets/icons/close.svg?component';
 import { FCWithChildren } from 'types/react';
 import styles from './ModalContainer.module.scss';
 
@@ -92,7 +92,7 @@ const ModalContainer: FCWithChildren<ModalProps> = ({
           aria-label="Close"
           className={styles.closeButton}
         >
-          <CloseIcon width={24} height={24} />
+          <Icon name="cross" />
         </button>
         <>{children}</>
       </animated.div>

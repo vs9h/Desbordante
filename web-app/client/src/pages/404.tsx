@@ -1,18 +1,15 @@
+import Button from '@components/Button';
+import { Icon } from '@components/IconComponent';
+import styles from '@styles/404.module.scss';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import Background from '@assets/backgrounds/404.svg?component';
-import Button from '@components/Button';
-import styles from '@styles/404.module.scss';
 
 const _404: NextPage = () => {
   const { push } = useRouter();
 
   return (
     <div className={styles.wrapper}>
-      <Background
-        className={styles.background}
-        preserveAspectRatio="xMidYMid slice"
-      />
+      <Icon name="background404" className={styles.background} />
       <div className={styles.inner}>
         <h1>404</h1>
         <h5>Page not found</h5>

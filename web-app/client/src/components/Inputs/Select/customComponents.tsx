@@ -1,3 +1,5 @@
+import { Icon } from '@components/IconComponent';
+import { InputPropsBase } from '@components/Inputs';
 import cn from 'classnames';
 import { ComponentType } from 'react';
 import {
@@ -11,8 +13,6 @@ import {
   ValueContainerProps,
   NoticeProps,
 } from 'react-select';
-import ChevronDownIcon from '@assets/icons/arrow-down.svg?component';
-import { InputPropsBase } from '@components/Inputs';
 import styles from './Select.module.scss';
 
 const Control: ComponentType<ControlProps & InputPropsBase> = ({
@@ -28,7 +28,7 @@ const Control: ComponentType<ControlProps & InputPropsBase> = ({
     className={cn(
       styles.control,
       error && styles.error,
-      isFocused && styles.focused
+      isFocused && styles.focused,
     )}
   >
     {children}
@@ -72,7 +72,7 @@ const IndicatorsContainer: ComponentType<
   IndicatorsContainerProps & InputPropsBase
 > = ({ innerProps }) => (
   <div className={styles.indicatorsContainer} {...innerProps}>
-    <ChevronDownIcon />
+    <Icon name="angle" />
   </div>
 );
 
@@ -87,7 +87,7 @@ export const Option: ComponentType<OptionProps & InputPropsBase> = ({
     className={cn(
       styles.option,
       isFocused && styles.focused,
-      isSelected && styles.selected
+      isSelected && styles.selected,
     )}
     {...innerProps}
     ref={innerRef}

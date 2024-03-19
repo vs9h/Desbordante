@@ -1,10 +1,10 @@
-import cn from 'classnames';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { FC, useEffect } from 'react';
+import { Icon, IconName } from '@components/IconComponent';
 import { primitivePathnames } from '@constants/primitiveReportPathnames';
 import useTaskState from '@hooks/useTaskState';
 import getTaskStatusData from '@utils/getTaskStatusData';
+import cn from 'classnames';
+import { useRouter } from 'next/router';
+import { FC, useEffect } from 'react';
 import { PrimitiveType } from 'types/globalTypes';
 import styles from './Loader.module.scss';
 
@@ -45,7 +45,7 @@ const Loader: FC = () => {
       <source src={status.icon} type="video/webm" />
     </video>
   ) : (
-    <Image src={status.icon} alt="status" width={70} height={76} />
+    <Icon name={status.icon as IconName} size={76} {...status.iconProps} />
   );
   return (
     <div className={styles.container}>

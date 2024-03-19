@@ -24,20 +24,6 @@
   background: $error-10 !important; // stylelint-disable-line declaration-no-important
 }
 
-.checkmark {
-  path {
-    fill: $success-100;
-    stroke: none;
-  }
-}
-
-.cross {
-  path {
-    fill: $error-100;
-    stroke: none;
-  }
-}
-
 .valueText {
   max-width: 100px;
   overflow: hidden;
@@ -48,4 +34,8 @@
 .clickableIndex {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.angleArrow {
+  margin-left: -5px;
 }

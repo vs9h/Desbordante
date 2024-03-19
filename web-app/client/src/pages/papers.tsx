@@ -1,11 +1,11 @@
-import { GetServerSideProps, NextPage } from 'next';
-import HomeBackground from '@assets/backgrounds/home.svg?component';
+import { Icon } from '@components/IconComponent';
 import PrPublicationCard from '@components/PrPublicationCard';
 import SciencePublicationCard from '@components/SciencePublicationCard';
 import cmsClient from '@graphql/cmsClient';
 import { getPublications } from '@graphql/operations/queries/__generated__/getPublications';
 import { GET_PUBLICATIONS } from '@graphql/operations/queries/getPublications';
 import styles from '@styles/Papers.module.scss';
+import { GetServerSideProps, NextPage } from 'next';
 
 interface Props {
   papers: getPublications;
@@ -17,12 +17,7 @@ const Papers: NextPage<Props> = ({ papers }) => {
 
   return (
     <div className={styles.papersPage}>
-      <HomeBackground
-        className={styles.background}
-        width="100%"
-        height="100%"
-        preserveAspectRatio="xMidYMid slice"
-      />
+      <Icon name="backgroundHome" className={styles.background} />
 
       {prPublications && prPublications.length > 0 && (
         <section className={styles.prPublications}>
@@ -30,7 +25,7 @@ const Papers: NextPage<Props> = ({ papers }) => {
           <ol className={styles.papersContainer}>
             {prPublications.map(
               ({ id, attributes }) =>
-                attributes && <PrPublicationCard key={id} data={attributes} />
+                attributes && <PrPublicationCard key={id} data={attributes} />,
             )}
           </ol>
         </section>
@@ -44,7 +39,7 @@ const Papers: NextPage<Props> = ({ papers }) => {
               ({ id, attributes }) =>
                 attributes && (
                   <SciencePublicationCard key={id} data={attributes} />
-                )
+                ),
             )}
           </ol>
         </section>
@@ -53,6 +48,7 @@ const Papers: NextPage<Props> = ({ papers }) => {
   );
 };
 
+/*
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const { data } = await cmsClient.query<getPublications>({
     query: GET_PUBLICATIONS,
@@ -63,6 +59,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
       papers: data,
     },
   };
-};
+};*/
 
 export default Papers;

@@ -1,8 +1,8 @@
-import Image from 'next/image';
+import { Icon } from '@components/IconComponent';
+import colors from '@constants/colors';
 import * as React from 'react';
 import { FC } from 'react';
 import ReactPaginate from 'react-paginate';
-import arrowRight from '@assets/icons/arrow-right.svg';
 import styles from './Pagination.module.scss';
 
 type Props = {
@@ -17,17 +17,22 @@ const Pagination: FC<Props> = ({ current, count, onChange }) => {
       <ReactPaginate
         breakLabel="..."
         nextLabel={
-          <Image src={arrowRight} width={16} height={16} alt="Next element" />
+          <Icon
+            name="angle"
+            color={colors.black[75]}
+            size={16}
+            orientation="right"
+          />
         }
         onPageChange={(e) => onChange(e.selected + 1)}
         pageRangeDisplayed={5}
         pageCount={count}
         previousLabel={
-          <Image
-            src={arrowRight}
-            width={16}
-            height={16}
-            alt="Previous element"
+          <Icon
+            name="angle"
+            color={colors.black[75]}
+            size={16}
+            orientation="right"
           />
         }
         className={styles.container}

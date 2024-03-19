@@ -1,5 +1,5 @@
+import { Icon } from '@components/IconComponent';
 import { FC, useLayoutEffect, useReducer, useRef } from 'react';
-import Cross from '@assets/icons/white-cross.svg?component';
 import styles from './MobileBanner.module.scss';
 
 const isMobile = () =>
@@ -37,7 +37,7 @@ const MobileBanner: FC = () => {
         unavailable.
       </small>
       <button aria-label="close" className={styles.close} onClick={hide}>
-        <Cross />
+        <Icon name="cross" />
       </button>
     </div>
   );

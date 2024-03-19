@@ -1,14 +1,14 @@
-import classNames from 'classnames';
-import { FC, HTMLProps } from 'react';
-import { Collapse } from 'react-collapse';
-import ArrowDownIcon from '@assets/icons/arrow-down.svg?component';
 import Button from '@components/Button';
 import { Badge } from '@components/FileStats/Badge';
 import { useToggle } from '@components/FileStats/hooks';
 import { ModeButton } from '@components/FileStats/ModeButton';
 import { Paper } from '@components/FileStats/Paper';
 import { StatsBlock } from '@components/FileStats/StatsBlock';
+import { Icon } from '@components/IconComponent';
 import { getFileStats_datasetInfo_statsInfo_stats as ColumnStats } from '@graphql/operations/queries/__generated__/getFileStats';
+import classNames from 'classnames';
+import { FC, HTMLProps } from 'react';
+import { Collapse } from 'react-collapse';
 import styles from './ColumnCard.module.scss';
 
 type ColumnCardProps = {
@@ -94,7 +94,7 @@ export const ColumnCard: FC<ColumnCardProps> = ({
       className={classNames(
         className,
         styles.wrapper,
-        compact && styles.compact
+        compact && styles.compact,
       )}
       {...props}
     >
@@ -105,13 +105,7 @@ export const ColumnCard: FC<ColumnCardProps> = ({
       {!compact && (
         <Button
           variant="secondary"
-          icon={
-            <ArrowDownIcon
-              style={{
-                transform: showDetails ? 'rotate(180deg)' : '',
-              }}
-            />
-          }
+          icon={<Icon name="angle" orientation={showDetails ? 'up' : 'down'} />}
           className={styles.detailsButton}
           onClick={toggleDetails}
           aria-label={!showDetails ? 'Show details' : 'Hide details'}

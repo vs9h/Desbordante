@@ -1,9 +1,9 @@
+import { Icon } from '@components/IconComponent';
+import { useTaskContext } from '@components/TaskContext';
+import { GeneralColumn } from '@utils/convertDependencies';
 import classNames from 'classnames';
 import _ from 'lodash';
 import { FC, ReactElement } from 'react';
-import LongArrowIcon from '@assets/icons/long-arrow.svg?component';
-import { useTaskContext } from '@components/TaskContext';
-import { GeneralColumn } from '@utils/convertDependencies';
 import styles from './DependencyList.module.scss';
 
 type Props = {
@@ -17,7 +17,7 @@ type Props = {
 
 const makeSide: (
   data: GeneralColumn | GeneralColumn[],
-  infoVisible: boolean
+  infoVisible: boolean,
 ) => ReactElement = (data, infoVisible) => {
   if (Array.isArray(data)) {
     return (
@@ -54,13 +54,13 @@ const DependencyList: FC<Props> = ({ deps, infoVisible }) => {
             className={classNames(
               styles.row,
               isSelected && styles.selectedRow,
-              isError && styles.errorRow
+              isError && styles.errorRow,
             )}
             onClick={() => selectDependency(isSelected ? [] : fullDependency)}
           >
             {makeSide(row.lhs, infoVisible)}
             <div className={styles.arrowContainer}>
-              <LongArrowIcon />
+              <Icon name="longArrow" />
               {row.confidence !== undefined && (
                 <small>{row.confidence * 100}%</small>
               )}

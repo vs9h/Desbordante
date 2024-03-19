@@ -1,7 +1,8 @@
-import { FC } from 'react';
-import DesbordanteIcon from '@assets/icons/desbordante.svg?component';
+import { Icon } from '@components/IconComponent';
+import colors from '@constants/colors';
 import { getTeamMembers_teamMembers_data_attributes } from '@graphql/operations/queries/__generated__/getTeamMembers';
 import { cmsUrlWrapper } from '@utils/cmsUrlWrapper';
+import { FC } from 'react';
 import styles from './TeamMemberBadge.module.scss';
 
 type TeamMemberAttributes = getTeamMembers_teamMembers_data_attributes;
@@ -20,7 +21,7 @@ const TeamMemberBadge: FC<Props> = ({ data }) => {
           {data.fullName}{' '}
           {data.isActive && (
             <span title="Active member">
-              <DesbordanteIcon className={styles.activeIcon} />
+              <Icon name="desbordante" color={colors.primary[100]} size={16} />
             </span>
           )}
         </h6>

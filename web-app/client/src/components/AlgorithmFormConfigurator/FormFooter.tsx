@@ -1,7 +1,7 @@
+import Button from '@components/Button';
+import { Icon } from '@components/IconComponent';
 import { NextRouter } from 'next/router';
 import React from 'react';
-import IdeaIcon from '@assets/icons/idea.svg?component';
-import Button from '@components/Button';
 
 const FormFooter = (router: NextRouter, onSubmit: () => Promise<void>) => (
   <>
@@ -16,7 +16,7 @@ const FormFooter = (router: NextRouter, onSubmit: () => Promise<void>) => (
     >
       Go Back
     </Button>
-    <Button variant="primary" icon={<IdeaIcon />} onClick={onSubmit}>
+    <Button variant="primary" icon={<Icon name="idea" />} onClick={onSubmit}>
       Analyze
     </Button>
   </>

@@ -1,14 +1,13 @@
+import { Icon } from '@components/IconComponent';
+import useModal from '@hooks/useModal';
+import { useTaskUrlParams } from '@hooks/useTaskUrlParams';
 import classNames from 'classnames';
 import { formatDistance } from 'date-fns';
 import { FC, PropsWithChildren } from 'react';
 import '@formatjs/intl-numberformat/polyfill';
 import '@formatjs/intl-numberformat/locale-data/en';
-import ThreeDotsIcon from '@assets/icons/three-dots.svg?component';
-import useModal from '@hooks/useModal';
-import { useTaskUrlParams } from '@hooks/useTaskUrlParams';
 import { AllowedDataset } from 'types/algorithms';
 import styles from './DatasetCard.module.scss';
-
 interface BaseCardProps extends PropsWithChildren {
   isSelected?: boolean;
   isDisabled?: boolean;
@@ -41,7 +40,7 @@ const BaseCard: FC<BaseCardProps> = ({
       className={classNames(
         styles.card,
         isSelected && styles.selected,
-        isDisabled && styles.disabled
+        isDisabled && styles.disabled,
       )}
       title={
         isDisabled
@@ -75,12 +74,12 @@ export const DatasetCard: FC<DatasetCardProps> = ({ file }) => {
     >
       <div className={styles.cardTitle}>
         <p title={fileName}>{fileName}</p>
-        <ThreeDotsIcon
+        <Icon
+          name="threeDots"
+          size={20}
           onClick={() =>
             openFilePropertiesModal({ fileID: file.fileID, data: file })
           }
-          width={20}
-          height={20}
         />
       </div>
       <div className={styles.cardDescription}>
